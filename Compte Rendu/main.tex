@@ -143,8 +143,8 @@ Le système de Saint-Venant avec terme source (qui est aussi désigné par le no
 $$
 \left \{
 \begin{array}{rcl}
-\frac{\partial h}{\partial t}(t,x)&+&\frac{\partial q}{\partial x}(t,x)=0\ \\
-\frac{\partial q}{\partial t}(t,x)&+&\frac{\partial}{\partial x}(\frac{q^{2}(t,x)}{h(t,x)}+g\frac{h^{2}(t,x)}{2})=-gh(t,x)\frac{\partial Z}{\partial x}(x)
+\frac{\partial h}{\partial t}(t,x)&+&\frac{\partial q}{\partial x}(t,x)=0\ \\ 
+\frac{\partial q}{\partial t}(t,x)&+&\frac{\partial}{\partial x}(\frac{q^{2}(t,x)}{h(t,x)}+g\frac{h^{2}(t,x)}{2})=-gh(t,x)\frac{\partial Z}{\partial x}(x) \label{deuxeq}
 \end{array}
 \right.
 $$
@@ -162,19 +162,18 @@ fait ainsi l'hypothèse que le fond ne s'érode pas au cours du temps ; ce qui p
 
 Rappelons la règle de Leibniz qui permet de calculer la dérivée par rapport à $x$ d'une fonction de la forme $\int_{a(x)}^{b(x)} f(x,t)\,~\mathrm dt$.
 
-Soit $f : \mathbb{R}^{2} \rightarrow\mathbb{R}$ telle que $f$ et ${\partial f\over\partial x}$ soient continues sur $\mathbb{R}$, et soient $a$ et $b$ deux fonctions dérivables de $\mathbb{R}$ dans $\mathbb{R}$. Alors, l'intégrale paramétrique $F$ définie sur $\mathbb{R}$ par :
-
-$F(x)=\int_{a(x)}^{b(x)}f(x,y)~\mathrm dy$ est dérivable et :
-
+\begin{prop}[Règle de Leibniz]
+Soit $f : \mathbb{R}^{2} \rightarrow\mathbb{R}$ telle que $f$ et ${\partial f\over\partial x}$ soient continues sur $\mathbb{R}$, et soient $a$ et $b$ deux fonctions dérivables de $\mathbb{R}$ dans $\mathbb{R}$. Alors, l'intégrale paramétrique $F$ définie sur $\mathbb{R}$ par : $F(x)=\int_{a(x)}^{b(x)}f(x,y)~\mathrm dy$ est dérivable et :
 \begin{equation}
 F'(x)=f(x, b(x))b'(x)-f(x,a(x))a'(x)+\int_{a(x)}^{b(x)}{\partial f\over \partial x}(x,y)~\mathrm dy.
 \end{equation}
+\end{prop}
 
-Nous noterons par la suite $\textbf{V}=$ $\begin{bmatrix}u\\ v \\ w \end{bmatrix}$le vecteur dont les composantes sont les vitesses $u, v$ et $w$ dans les trois directions $Ox, Oy$ et $Oz$.
+Nous noterons par la suite $$\textbf{V}=\begin{bmatrix}u\\ v \\ w \end{bmatrix}$$ le vecteur dont les composantes sont les vitesses $u, v$ et $w$ dans les directions $(Ox), (Oy)$ et $(Oz)$ respectivement.
 
 \
 
-Nous allons maintenant dériver la deuxième équation du système. Il s'agit de l'\textbf{équation du moment}. Ecrivons la composante selon $x$ de l'équation d'Euler : 
+Nous allons maintenant dériver la deuxième équation du système. Il s'agit de l'\textbf{équation du moment}. Ecrivons la composante selon $(Ox)$ de l'équation d'Euler : 
 
 \begin{equation}
 \frac{Du}{Dt} = \frac{\partial u}{\partial t}+u\frac{\partial u}{\partial x}+v\frac{\partial u}{\partial y}+w\frac{\partial u}{\partial z}=-\frac{1}{\rho}\frac{\partial P}{\partial x}. \label{EqEulerX}
@@ -186,9 +185,9 @@ On fait l'hypothèse que les quantités $h$ et $u$ sont invariantes selon l'axe 
 \frac{\partial u}{\partial t}+u\frac{\partial u}{\partial x}+w\frac{\partial u}{\partial z}=-\frac{1}{\rho}\frac{\partial P}{\partial x}.
 \end{equation}
 
-On sait par l'équation de continuité pour un fluide incompressible que :
+La loi de conservation de la masse pour un fluide incompressible est
 \begin{equation}
-\text{div}(\textbf{V})=\frac{\partial u}{\partial x}+\frac{\partial v}{\partial y}+\frac{\partial w}{\partial z}=0 \label{eq:Romain}
+\text{div}(\textbf{V})=\frac{\partial u}{\partial x}+\frac{\partial v}{\partial y}+\frac{\partial w}{\partial z}=0. \label{eq:Romain}
 \end{equation}
 
 En multipliant par $u$ cette équation,
@@ -203,19 +202,20 @@ De nouveau, l'hypothèse d'invariance selon $(Oy)$ permet de dire que $\frac{\pa
 \frac{\partial u}{\partial t}+\frac{\partial}{\partial x} (u^{2})+\frac{\partial }{\partial z}(uw)=-\frac{1}{\rho}\frac{\partial P}{\partial x}.
 \end{equation}
 
-Maintenant, on intègre entre $z=Z$ et $z=h+Z$ :
+Maintenant, on intègre entre $z=Z$ et $z=Z+h$ :
 
 \begin{equation}
-\int_{Z}^{h+Z}\left[\frac{\partial u}{\partial t}+\frac{\partial }{\partial x}(u^{2})\right]~\mathrm dz+\left[uw\right]_{Z}^{h+Z}=-\frac{1}{\rho}\int_{Z}^{h+Z}\frac{\partial P}{\partial x}~\mathrm dz. \label{EqInt}
+\int_{Z}^{Z+h}\left[\frac{\partial u}{\partial t}+\frac{\partial }{\partial x}(u^{2})\right]~\mathrm dz+\left[uw\right]_{Z}^{Z+h}=-\frac{1}{\rho}\int_{Z}^{Z+h}\frac{\partial P}{\partial x}~\mathrm dz. \label{EqInt}
 \end{equation}
 
 Avec la règle de Leibniz, on a d'une part :
 
 \begin{equation}
-\frac{\partial}{\partial t}\int_{Z}^{h+Z}u ~\mathrm dz = \int_{Z}^{h+Z}\frac{\partial u}{\partial t} ~\mathrm dz +u_{h+Z}\frac{\partial}{\partial t}(h+Z)-u_{Z}\frac{\partial Z}{\partial t}  = \int_{Z}^{h+Z}\frac{\partial u}{\partial t} ~\mathrm dz +u_{h+Z}\frac{\partial h}{\partial t}
+\begin{split}
+& \frac{\partial}{\partial t}\int_{Z}^{Z+h}u ~\mathrm dz = \int_{Z}^{Z+h}\frac{\partial u}{\partial t} ~\mathrm dz +u\vert_{z=Z+h}\frac{\partial}{\partial t}(Z+h)-u\vert_{z=Z}\frac{\partial Z}{\partial t} \\
+& = \int_{Z}^{Z+h}\frac{\partial u}{\partial t} ~\mathrm dz +u\vert_{z=Z+h}\frac{\partial h}{\partial t} \\
+\end{split}
 \end{equation}
-
-\
 
 la suppression du terme $\frac{\partial Z}{\partial t}$ venant du fait que la topographie est supposée constante au cours du temps.
 
@@ -224,7 +224,7 @@ la suppression du terme $\frac{\partial Z}{\partial t}$ venant du fait que la to
 Et d'autre part on a :
 
 \begin{equation}
-\frac{\partial}{\partial x}\int_{Z}^{h+Z}u^{2} ~\mathrm dz = \int_{Z}^{h+Z}\frac{\partial }{\partial x}(u^{2}) ~\mathrm dz +u_{h+Z}^{2}\frac{\partial}{\partial x}(h+Z)-u_{Z}^{2}\frac{\partial Z}{\partial x} 
+\frac{\partial}{\partial x}\int_{Z}^{Z+h}u^{2} ~\mathrm dz = \int_{Z}^{Z+h}\frac{\partial }{\partial x}(u^{2}) ~\mathrm dz +u^{2}\vert_{z=Z+h}\frac{\partial}{\partial x}(Z+h)-u^{2}\vert_{z=Z}\frac{\partial Z}{\partial x} 
 \end{equation}
 
 \
@@ -233,27 +233,33 @@ Donc en injectant dans \eqref{EqInt} on obtient :
 
 \begin{equation}
 \begin{split}
-& \frac{\partial}{\partial t}\left[\int_{Z}^{h+Z}u ~\mathrm dz\right] -u_{h+Z}\frac{\partial h}{\partial t} + \frac{\partial}{\partial x}\left[\int_{Z}^{h+Z} u^{2} ~\mathrm dz\right]-u_{h+Z}^{2}\frac{\partial}{\partial x}(h+Z) \\
-& +u_{Z}^{2}\frac{\partial Z}{\partial x}+u_{h+Z}w_{h+Z}-u_{Z}w_{Z}= -\frac{1}{\rho}\int_{Z}^{h+Z}\frac{\partial P}{\partial x} ~\mathrm dz
+& \frac{\partial}{\partial t}\left[\int_{Z}^{Z+h}u ~\mathrm dz\right] -u\vert_{z=Z+h}\frac{\partial h}{\partial t} + \frac{\partial}{\partial x}\left[\int_{Z}^{Z+h} u^{2} ~\mathrm dz\right]-u^{2}\vert_{z=Z+h}\frac{\partial}{\partial x}(Z+h) \\
+& +u^{2}\vert_{z=Z}\frac{\partial Z}{\partial x}+u\vert_{z=Z+h}w\vert_{z=Z+h}-u\vert_{z=Z}w\vert_{z=Z}= -\frac{1}{\rho}\int_{Z}^{Z+h}\frac{\partial P}{\partial x} ~\mathrm dz \\
 \end{split}
 \end{equation}
 
 
-Si l'on suppose que la vitesse $u$ est constante selon l'axe $z$, on a que $\int_{Z}^{h+Z}u ~\mathrm dz = uh$ et $\int_{Z}^{h+Z}u^{2} ~\mathrm dz = u^{2}h$, et donc :
+Si l'on suppose que la vitesse $u$ est constante selon l'axe $(Oz)$, on a que $\int_{Z}^{Z+h}u ~\mathrm dz = uh$ et $\int_{Z}^{Z+h}u^{2} ~\mathrm dz = u^{2}h$, et donc :
 
 \begin{equation}
-\frac{\partial}{\partial t}(uh)+ \frac{\partial}{\partial x}(u^{2}h)-u_{h+Z}(\frac{\partial h}{\partial t}+u_{h+Z}\frac{\partial}{\partial x}(h+Z)-w_{h+Z})=-\frac{1}{\rho}\int_{Z}^{h+Z}\frac{\partial u}{\partial t} ~\mathrm dz
+\begin{split}
+& \frac{\partial}{\partial t}(uh)+ \frac{\partial}{\partial x}(u^{2}h)-u\vert_{z=Z+h}(\frac{\partial h}{\partial t}+u\vert_{z=Z+h}\frac{\partial}{\partial x}(Z+h)-w\vert_{z=Z+h}) \\
+& =-\frac{1}{\rho}\int_{Z}^{Z+h}\frac{\partial u}{\partial t} ~\mathrm dz \\ \label{name}
+\end{split}
 \end{equation}
 
-Ce qui, d'après la condition (de bord à la surface libre) (ref) se réduit en :
+Or comme $\frac{\partial h}{\partial t}+u\vert_{z=Z+h}\frac{\partial}{\partial x}(Z+h)=w\vert_{z=Z+h}$, l'équation \ref{name} se réduit en
 
 \begin{equation}
- \frac{\partial q}{\partial t}+ \frac{\partial}{\partial x}(hu^{2})=-\frac{1}{\rho}\int_{Z}^{h+Z}\frac{\partial P}{\partial x} ~\mathrm dz \label{brice2}
+ \frac{\partial q}{\partial t}+ \frac{\partial}{\partial x}(hu^{2})=-\frac{1}{\rho}\int_{Z}^{Z+h}\frac{\partial P}{\partial x} ~\mathrm dz \label{brice2}
  \end{equation}
 
-Encore une fois avec la règle de Leibniz $\int_{Z}^{h+Z}\frac{\partial P}{\partial x} ~\mathrm dz =\frac{\partial }{\partial x}\int_{Z}^{h+Z}P ~\mathrm dz + P(h+Z)\frac{\partial}{\partial x}(h+Z)-P(Z)\frac{\partial Z}{\partial x} = \frac{\partial }{\partial x}\int_{Z}^{h+Z}P ~\mathrm dz-\rho g h\frac{\partial Z}{\partial x}$. En utilisant la formule d'équilibre hydrostatique : 
+Encore une fois avec la règle de Leibniz 
+$$\int_{Z}^{Z+h}\frac{\partial P}{\partial x} ~\mathrm dz =\frac{\partial }{\partial x}\int_{Z}^{Z+h}P ~\mathrm dz + P(Z+h)\frac{\partial}{\partial x}(Z+h)-P(Z)\frac{\partial Z}{\partial x} = \frac{\partial }{\partial x}\int_{Z}^{Z+h}P ~\mathrm dz-\rho g h\frac{\partial Z}{\partial x}.$$ 
+
+En utilisant la formule d'équilibre hydrostatique : 
 \begin{equation}
-\frac{\partial}{\partial x}\int_{Z}^{h+Z}P ~\mathrm dz=\frac{\partial}{\partial x} \int_{Z}^{h+Z}\rho g(h+Z-z) ~\mathrm dz = \frac{\partial}{\partial x}(\rho g h^{2}/2) \label{brice3}
+\frac{\partial}{\partial x}\int_{Z}^{Z+h}P ~\mathrm dz=\frac{\partial}{\partial x} \int_{Z}^{Z+h}\rho g(Z+h-z) ~\mathrm dz = \frac{\partial}{\partial x}(\rho g h^{2}/2) \label{brice3}
 \end{equation}
 
 Et en combinant \ref{brice2} et \ref{brice3} on arrive à la deuxième équation en rempla\c cant :
@@ -264,17 +270,17 @@ Et en combinant \ref{brice2} et \ref{brice3} on arrive à la deuxième équation
 
 %Partie Romain%
 
-Pour obtenir la première équation, repartons de \ref{eq:Romain} et intégrons entre $z=Z$ et $z=h+Z$ :
+Pour obtenir la première équation, repartons de \ref{eq:Romain} et intégrons entre $z=Z$ et $z=Z+h$ :
 
 \begin{equation}
-\int_{Z}^{h+Z} (u_x + v_y) \ dz + w(h+Z)-w(Z) = 0 
+\int_{Z}^{Z+h} (u_x + v_y) \ dz + w\vert_{z=Z+h}-w\vert_{z=Z} = 0 
 \label{EqRomain1}
 \end{equation}
 
 Pour résoudre cette équation, il est nécessaire de poser ces conditions au bord :
 
 \begin{align}
-\frac{D}{Dt} (h+Z-z) = 0 \quad \text{en z = h+Z} \label{BordHaut}\\
+\frac{D}{Dt} (Z+h-z) = 0 \quad \text{en z = Z+h} \label{BordHaut}\\
 \frac{D}{Dt} (Z-z) = 0 \quad \text{en z = Z} \label{BordBas}
 \end{align}
 
@@ -289,7 +295,7 @@ La deuxième condition au bord traduit le même phénomène mais au niveau du fo
 On peut remplacer ces deux dérivées droites en temps grâce à \ref{EqEulerX} :
 
 \begin{align}
-[ \frac{\partial (h+Z)}{\partial t} + u.\frac{\partial (h+Z)}{\partial x} + v.\frac{\partial (h+Z)}{\partial y} - w ] \vert _{z=h+Z} = 0 \label{BordHautDvpt} \\
+[ \frac{\partial (Z+h)}{\partial t} + u.\frac{\partial (Z+h)}{\partial x} + v.\frac{\partial (Z+h)}{\partial y} - w ] \vert _{z=Z+h} = 0 \label{BordHautDvpt} \\
 [ u.Z_x + v.Z_y + w ] \vert _{z=Z} = 0 \label{BordBasDvpt}
 \end{align}
 
@@ -302,13 +308,13 @@ Et grâce à cette relation :
 En réinsérant \ref{BordHautDvpt} et \ref{BordBasDvpt} dans \ref{EqRomain1}, on a finalement : 
 
 \begin{equation}
-\frac{\partial (h+Z)}{\partial t} + \frac{\partial}{\partial x} \int_{Z}^{h+Z} u \ dz +  \frac{\partial}{\partial y} \int_{Z}^{h+Z} v \ dz
+\frac{\partial (Z+h)}{\partial t} + \frac{\partial}{\partial x} \int_{Z}^{Z+h} u \ dz +  \frac{\partial}{\partial y} \int_{Z}^{Z+h} v \ dz
 \end{equation}
 
 Nous pouvons davantage simplifier cette équation en observant que u et v sont indépendants de z, ainsi que Z indépendant du temps. Cette équation devient donc :
 
 \begin{equation}
-\frac{\partial h}{\partial t} + \frac{\partial}{\partial x} (u . h ) + \frac{\partial}{\partial y} (v . h ) \label{EqSaintVenant1}
+\frac{\partial h}{\partial t} + \frac{\partial}{\partial x} (u . h ) + \frac{\partial}{\partial y} (v . h )=0 \label{EqSaintVenant1}
 \end{equation}
 
 Soit la première équation de Saint Venant.
@@ -321,7 +327,7 @@ Les deux équations \ref{EqSaintVenant1} et \ref{EqSaintVenant2} forment un syst
 
 \begin{prop} La vitesse $u$ vérifie la loi de conservation hyperbolique scalaire suivante : 
 \begin{equation}
-\frac{\partial u}{\partial t}+\frac{\partial}{\partial x}(\frac{u^{2}}{2}+g(h+Z))=0 \label{cl}
+\frac{\partial u}{\partial t}+\frac{\partial}{\partial x}(\frac{u^{2}}{2}+g(Z+h))=0 \label{cl}
 \end{equation}
 
 \end{prop}
@@ -350,11 +356,11 @@ $$
 $$
 
 $$
-\Leftrightarrow u\left[-\frac{\partial q}{\partial x}+\frac{h}{u}\frac{\partial u}{\partial t}+u\frac{\partial h }{\partial x}\right]+h\left[u \frac{\partial u}{\partial x}+\frac{\partial}{\partial x}(\frac{u^{2}}{2}+g(h+Z))\right] =0
+\Leftrightarrow u\left[-\frac{\partial q}{\partial x}+\frac{h}{u}\frac{\partial u}{\partial t}+u\frac{\partial h }{\partial x}\right]+h\left[u \frac{\partial u}{\partial x}+\frac{\partial}{\partial x}(\frac{u^{2}}{2}+g(Z+h))\right] =0
 $$
 
 $$
-\Leftrightarrow u\left[-\frac{\partial q}{\partial x}+\frac{h}{u}\frac{\partial u}{\partial t}+u\frac{\partial h }{\partial x} + h\frac{\partial u }{\partial x}\right]+h\left[\frac{\partial}{\partial x}(\frac{u^{2}}{2}+g(h+Z))\right] =0
+\Leftrightarrow u\left[-\frac{\partial q}{\partial x}+\frac{h}{u}\frac{\partial u}{\partial t}+u\frac{\partial h }{\partial x} + h\frac{\partial u }{\partial x}\right]+h\left[\frac{\partial}{\partial x}(\frac{u^{2}}{2}+g(Z+h))\right] =0
 $$
 
 \
@@ -362,7 +368,7 @@ $$
 D'après \eqref{eq1}, une simplification s'opère dans les crochets de gauche et on obtient :
 
 $$
-u\left[\frac{h}{u}\frac{\partial u}{\partial t}\right]+h\left[\frac{\partial}{\partial x}(\frac{u^{2}}{2}+g(h+Z))\right] =0
+u\left[\frac{h}{u}\frac{\partial u}{\partial t}\right]+h\left[\frac{\partial}{\partial x}(\frac{u^{2}}{2}+g(Z+h))\right] =0
 $$
 \
 
@@ -600,20 +606,15 @@ Voyons quelques exemples de solutions calculées à l'aide du schéma afin de va
 \bibitem{RL} R. \textsc{Leveque},
 \textit{Finite Volume Methods for Hyperbolic Problems}, Cambridge University Press, 2004
 
+\bibitem{ET} E. \textsc{Toro},
+\textit{Riemann Solvers and Numerical Methods for Fluid Dynamic}, Springer, 2009
+
+\bibitem{W} \textsc{Wikipedia},
+\href{https://fr.wikipedia.org/wiki/Intégrale_paramétrique#Dérivabilité}{ \textit{Intégrale paramétrique}}
+
 \end{thebibliography}
 
 %----------------------------------------------------------------------------------------
 
 \end{document}  
-© 2022 GitHub, Inc.
-Terms
-Privacy
-Security
-Status
-Docs
-Contact GitHub
-Pricing
-API
-Training
-Blog
-About
+
