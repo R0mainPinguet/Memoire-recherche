@@ -584,7 +584,40 @@ Cf l'énoncé du TP. Mais il faudrait pouvoir expliquer pourquoi.
 
 \subsection{Validation de l'implémentation avec des tests}
 
-Voyons quelques exemples de solutions calculées à l'aide du schéma afin de valider l'implémentation.
+Dans cette partie, nous allons effectuer des tests sur notre implémentation.
+
+\
+
+D’abort nous allons observer numériquement la convergence de la solution numérique. Nous allons voir que lorsque le nombre $N$ grandit, 
+les courbes de $h$ et $q$ on tendance à se rapprocher d’une courbe limite. Au passage, on pourra observer ce qui semble être un effet régularisant de l'équation : même lorsque l'on prend un profil initial non dérivable pour la hauteur d'eau $h$, la solution se lisse (immédiatement ?). Cette propriété devra être vérifiée. On pourra essayer de la justifier si elle est vraie...
+
+\
+
+Puis nous regarderons l’influence du pas spatial. En particulier, nous verrons ce qu'il se passe lorsque la condition CFL n'est pas vérifiée.
+
+\
+
+Enfin, nous allons confronter nos résultats à des tests que l’on retrouve fréquemment dans la littérature (rupture de barrage, bosse d’eau, etc).
+
+\subsubsection{Influence du pas spatial et convergence de la solution}
+
+\subsubsection{Influence du pas temporel}
+
+Voici des représentations de la solution à différents instants (approximativement $t=0, 5, 10, 15$ et $20$ secondes) avec pas de temps égal $0.5\tau, \tau$ et $2\tau$ ; $\tau$ étant défini par ...
+
+\begin{center}
+\includegraphics[scale=0.35]{part1.png} 
+
+\includegraphics[scale=0.35]{part2.png} 
+
+\includegraphics[scale=0.35]{part3.png} 
+\end{center}
+
+\
+
+On remarque immédiatement l'influence du pas temporel sur la conservation de la quantité d'eau. Plus le pas est choisi petit et meilleure est la conservation. On observe une dynamique similaire pour les deux cas qui respectent la condition CFL ($\tau$ et $0.5\tau$). Néanmoins, les évolutions sont trop différentes (la vague issue de la rupture de barrage se déplace plus lentement lorsque le pas de temps est $0.5\tau$ ; cette différence vient peut être du fait que la condition doit être respectée strictement... à éclaircir). Lorsque la condition CFL n'est pas vérifiée, l'évolution est très différente.
+
+\subsubsection{Confrontation de l'implémentation à des références}
 
 \section{Utilisation des limiteurs de pente pour une montée en ordre}
 
