@@ -635,17 +635,32 @@ Enfin, nous allons confronter nos résultats à des tests que l’on retrouve fr
 
 Voici des représentations de la solution à différents instants (approximativement $t=0, 5, 10, 15$ et $20$ secondes) avec pas de temps égal $0.5\tau, \tau$ et $2\tau$ ; $\tau$ étant défini par ...
 
-\begin{center}
-\includegraphics[scale=0.35]{part1.png} 
-
-\includegraphics[scale=0.35]{part2.png} 
-
-\includegraphics[scale=0.35]{part3.png} 
+\begin{figure}[h]
+\begin{center}$
+\begin{array}{ccc}
+\includegraphics[scale = .15]{"t0_tau05"} &
+\includegraphics[scale = .15]{"t0_tau"} &
+\includegraphics[scale = .15]{"t0_tau2"}
+\\
+\includegraphics[scale = .15]{"t5_tau05"} &
+\includegraphics[scale = .15]{"t5_tau"} &
+\includegraphics[scale = .15]{"t5_tau2"}
+\\
+\includegraphics[scale = .15]{"t10_tau05"} &
+\includegraphics[scale = .15]{"t10_tau"} &
+\includegraphics[scale = .15]{"t10_tau2"}
+\\
+\includegraphics[scale = .15]{"t15_tau05"} &
+\includegraphics[scale = .15]{"t15_tau"} &
+\includegraphics[scale = .15]{"t15_tau2"}
+\end{array}$
 \end{center}
+\caption{Simulations pour différentes valeurs de $\tau$}
+\end{figure}
 
 \
 
-On remarque immédiatement l'influence du pas temporel sur la conservation de la quantité d'eau. Plus le pas est choisi petit et meilleure est la conservation. On observe une dynamique similaire pour les deux cas qui respectent la condition CFL ($\tau$ et $0.5\tau$). Néanmoins, les évolutions sont trop différentes (la vague issue de la rupture de barrage se déplace plus lentement lorsque le pas de temps est $0.5\tau$ ; cette différence vient peut être du fait que la condition doit être respectée strictement... à éclaircir). Lorsque la condition CFL n'est pas vérifiée, l'évolution est très différente.
+On remarque immédiatement l'influence du pas temporel sur la conservation de la quantité d'eau. Plus le pas est choisi petit et meilleure est la conservation. On observe une dynamique similaire pour les deux cas qui respectent la condition CFL ($\tau$ et $0.5\tau$). Néanmoins, les évolutions sont quelque peu différentes (la vague issue de la rupture de barrage se déplace plus lentement lorsque le pas de temps est $0.5\tau$ ; cette différence dans les deux solutions obtenues vient peut être du fait que la condition doit être respectée strictement... à éclaircir). Lorsque la condition CFL n'est pas vérifiée, l'évolution est très différente.
 
 \
 
