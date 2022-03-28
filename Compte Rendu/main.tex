@@ -18,6 +18,377 @@ headsepline, % Uncomment to get a line under the header
 %consistentlayout, % Uncomment to change the layout of the declaration, abstract and acknowledgements pages to match the default layout
 ]{MastersDoctoralThesis} % The class file specifying the document structure
 
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    
+    \usepackage{iftex}
+    \ifPDFTeX
+    	\usepackage[T1]{fontenc}
+    	\usepackage{mathpazo}
+    \else
+    	\usepackage{fontspec}
+    \fi
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+    \usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics 
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+    
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    
+    
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{Implementation\_1D\_Fond}
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\@namedef{PY@tok@w}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\@namedef{PY@tok@c}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cp}{\def\PY@tc##1{\textcolor[rgb]{0.74,0.48,0.00}{##1}}}
+\@namedef{PY@tok@k}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kt}{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\@namedef{PY@tok@o}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ow}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@nb}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nf}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@ne}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.82,0.25,0.23}{##1}}}
+\@namedef{PY@tok@nv}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@no}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\@namedef{PY@tok@nl}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.63,0.00}{##1}}}
+\@namedef{PY@tok@ni}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.60,0.60,0.60}{##1}}}
+\@namedef{PY@tok@na}{\def\PY@tc##1{\textcolor[rgb]{0.49,0.56,0.16}{##1}}}
+\@namedef{PY@tok@nt}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nd}{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@s}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sd}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@si}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\@namedef{PY@tok@se}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.13}{##1}}}
+\@namedef{PY@tok@sr}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\@namedef{PY@tok@ss}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sx}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@m}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@gh}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gu}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gd}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\@namedef{PY@tok@gi}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.63,0.00}{##1}}}
+\@namedef{PY@tok@gr}{\def\PY@tc##1{\textcolor[rgb]{1.00,0.00,0.00}{##1}}}
+\@namedef{PY@tok@ge}{\let\PY@it=\textit}
+\@namedef{PY@tok@gs}{\let\PY@bf=\textbf}
+\@namedef{PY@tok@gp}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@go}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.53,0.53}{##1}}}
+\@namedef{PY@tok@gt}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\@namedef{PY@tok@err}{\def\PY@bc##1{{\setlength{\fboxsep}{\string -\fboxrule}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}}
+\@namedef{PY@tok@kc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kd}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kr}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@bp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@fm}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@vc}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vg}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vi}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vm}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sa}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sb}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sc}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@dl}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s2}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sh}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s1}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@mb}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mf}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mh}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mi}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@il}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mo}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ch}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cm}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cpf}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@c1}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cs}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb. 
+    \makeatletter
+        \newbox\Wrappedcontinuationbox 
+        \newbox\Wrappedvisiblespacebox 
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}} 
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}} 
+        \newcommand*\Wrappedcontinuationindent {3ex } 
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox} 
+        % Take advantage of the already applied Pygments mark-up to insert 
+        % potential linebreaks for TeX processing. 
+        %        {, <, #, %, $, ' and ": go to next line. 
+        %        _, }, ^, &, >, - and ~: stay at end of broken line. 
+        % Use of \textquotesingle for straight quote. 
+        \newcommand*\Wrappedbreaksatspecials {% 
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}% 
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}% 
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}% 
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}% 
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}% 
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}% 
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}% 
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}% 
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}% 
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}% 
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}% 
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}% 
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}% 
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}% 
+        } 
+        % Some characters . , ; ? ! / are not pygmentized. 
+        % This macro makes them "active" and they will insert potential linebreaks 
+        \newcommand*\Wrappedbreaksatpunct {% 
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}% 
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}% 
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}% 
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}% 
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}% 
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}% 
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}% 
+            \catcode`\.\active
+            \catcode`\,\active 
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active 
+            \lccode`\~`\~ 	
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+        
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active 	
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+    
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy 
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+
 \usepackage[utf8]{inputenc} % Required for inputting international characters
 \usepackage[T1]{fontenc} % Output font encoding for international characters
 
@@ -28,9 +399,9 @@ headsepline, % Uncomment to get a line under the header
 
 \usepackage{amsmath}
 
-\usepackage[backend=bibtex,style=authoryear,natbib=true]{biblatex} % Use the bibtex backend with the authoryear citation style (which resembles APA)
 
-\addbibresource{example.bib} % The filename of the bibliography
+
+
 
 \usepackage[autostyle=true]{csquotes} % Required to generate language-dependent quotes in the bibliography
 
@@ -82,6 +453,7 @@ headsepline, % Uncomment to get a line under the header
 \renewcommand{\thesection}{\arabic{section}}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
+\usepackage{cases}
 
 
 \begin{document}
@@ -140,20 +512,10 @@ et d'expliquer comment on peut arriver à ces équations.
 
 Le système de Saint-Venant avec terme source (qui est aussi désigné par le nom \og équations d'écoulements en eau peu profonde  \fg{}) est le suivant :
 
-$$
-\left \{
-\begin{array}{rcl}
-\frac{\partial h}{\partial t}(t,x)&+&\frac{\partial q}{\partial x}(t,x)=0\ \\ 
-\frac{\partial q}{\partial t}(t,x)&+&\frac{\partial}{\partial x}(\frac{q^{2}(t,x)}{h(t,x)}+g\frac{h^{2}(t,x)}{2})=-gh(t,x)\frac{\partial Z}{\partial x}(x) \label{deuxeq}
-\end{array}
-\right.
-$$
-
-\
+\begin{equation} \frac{\partial h}{\partial t}(t,x)+\frac{\partial q}{\partial x}(t,x)=0 \label{sveq1} \end{equation}
+\begin{equation} \frac{\partial q}{\partial t}(t,x)+\frac{\partial}{\partial x}(\frac{q^{2}(t,x)}{h(t,x)}+g\frac{h^{2}(t,x)}{2})=-gh(t,x)\frac{\partial Z}{\partial x}(x) \label{sveq2} \end{equation}
 
 Celui-ci permet de décrire un écoulement d'eau unidirectionnel où $h(t,x)>0$ représente la hauteur d'eau, $u(t,x)$ désigne la vitesse du fluide, $q(t,x)=h(t,x)u(t,x)$ le débit du fluide et $Z(x)$ la topographie canal ; $t\geq0$ étant le temps, $x\in\mathbb{R}$ la position spatiale dans le cours d'eau et $g$ la constante de gravitation.
-
-\
 
 Dans ce système, $Z$ ne dépend pas du temps $t$. On
 fait ainsi l'hypothèse que le fond ne s'érode pas au cours du temps ; ce qui parait raisonnable dans de nombreuses situations (un fond rocheux sur une courte durée, par exemple).
@@ -335,16 +697,13 @@ Les deux équations \ref{EqSaintVenant1} et \ref{EqSaintVenant2} forment un syst
 \begin{proof}
 Puisque $q=h.u$, la dérivée spatiale de $q$ s'écrit : \begin{equation}\frac{\partial q}{\partial x} = u\frac{\partial h}{\partial x}+h\frac{\partial u}{\partial x} \label{eq1}\end{equation}
 et la dérivée temporelle : \begin{equation} \frac{\partial q}{\partial t} =  u\frac{\partial h}{\partial t} +  h\frac{\partial u}{\partial t} \label{eq2} \end{equation}
-Alors en utilisant l'équation (mettre ici ref) du système, la dérivée temporelle donne aussi la relation \begin{equation}  \frac{\partial q}{\partial t}=-u\frac{\partial q}{\partial x}+h\frac{\partial u}{\partial t} \label{eq3}\end{equation}
+Alors en utilisant l'équation \ref{sveq1} du système, la dérivée temporelle donne aussi la relation \begin{equation}  \frac{\partial q}{\partial t}=-u\frac{\partial q}{\partial x}+h\frac{\partial u}{\partial t} \label{eq3}\end{equation}
 
-\
-
-La loi de conservation que l'on cherche à montrer est alors une réécriture de l'équation (mettre ici ref) du système. On a en effet :
+La loi de conservation que l'on cherche à montrer est alors une réécriture de l'équation \ref{sveq2} du système. On a en effet :
 
 $$
 \frac{\partial q}{\partial t} + \frac{\partial }{\partial x}(\frac{q^{2}}{h}+g\frac{h^{2}}{2}) = -gh\frac{\partial Z}{\partial x}
 $$
-\
 
 En développant la dérivée par rapport à $x$ et en utilisant \eqref{eq3} : 
 $$
@@ -363,25 +722,18 @@ $$
 \Leftrightarrow u\left[-\frac{\partial q}{\partial x}+\frac{h}{u}\frac{\partial u}{\partial t}+u\frac{\partial h }{\partial x} + h\frac{\partial u }{\partial x}\right]+h\left[\frac{\partial}{\partial x}(\frac{u^{2}}{2}+g(Z+h))\right] =0
 $$
 
-\
 
 D'après \eqref{eq1}, une simplification s'opère dans les crochets de gauche et on obtient :
 
 $$
 u\left[\frac{h}{u}\frac{\partial u}{\partial t}\right]+h\left[\frac{\partial}{\partial x}(\frac{u^{2}}{2}+g(Z+h))\right] =0
 $$
-\
 
 Il suffit alors de diviser par $h>0$ pour obtenir le résultat \eqref{cl}.
 
 \end{proof}
 
-\section{Implémentation du schéma de Rusanov}
-
-\subsection{Présentation du schéma et résultats de convergence}
-
-Dans cette partie, il s'agit de résoudre numériquement le système de Saint-Venant. 
-Posons
+Pour la suite, posons :
 
 \begin{center}
 
@@ -399,21 +751,52 @@ $
 \end{center}
 
 $\textbf{U}$ désigne le vecteur inconnu, $\textbf{F} (\textbf{U})$ la fonction flux et $\textbf{B} (\textbf{U})$ le terme source. Avec ces notations,
-le système de départ se réécrit $$\frac{\partial\textbf{U}}{\partial t}+\frac{\partial}{\partial x}(\textbf{F} (\textbf{U})) = \textbf{B} (\textbf{U})$$
+le système de départ se réécrit : $$\frac{\partial\textbf{U}}{\partial t}+\frac{\partial}{\partial x}(\textbf{F} (\textbf{U})) = \textbf{B} (\textbf{U}).$$
+
+Nous allons faire l'hypothèse que $Z \equiv 0$. Les résultats que nous allons montrer à partir de maintenant ne seront valables que pour une topographie $Z$ nulle.
+En particulier, l'utilisation du schéma de Rusanov hors de ce cadre relèvera d'une démarche empirique.
+
+\
 
 \begin{prop}
 Posons le vecteur $\textbf{W}= (h, u)^{T}$ (variable dite non conservative). $\textbf{W}$ vérifie le système quasi-linéaire suivant :
-$$ \frac{\partial \textbf{W}}{\partial t} +\mathbb{A}(\textbf{W}) \frac{\textbf{W}}{\partial x} = 0 \label{ql} $$
+$$ \frac{\partial \textbf{W}}{\partial t} +\mathbb{A}(\textbf{W}) \frac{\partial\textbf{W}}{\partial x} = 0 \label{ql} $$
 avec $\mathbb{A}(\textbf{W})$ définie par :
 
 $$\mathbb{A}(\textbf{W}) =\begin{pmatrix}
    u & h  \\
    g & u  \\
-\end{pmatrix}$$
+\end{pmatrix}.$$
 
 \end{prop}
 
 \begin{proof}
+
+On a $\frac{\partial\textbf{W}}{\partial t}=\begin{pmatrix}
+   h_{t} \\
+    u_{t} \\
+\end{pmatrix} ~\text{et} ~~ \frac{\partial\textbf{W}}{\partial x}=\begin{pmatrix}
+   h_{x} \\
+    u_{x} \\
+\end{pmatrix}$.
+
+En effectuant le produit matriciel et en sommant les termes dans l'équation  $ \frac{\partial \textbf{W}}{\partial t} +\mathbb{A}(\textbf{W}) \frac{\partial\textbf{W}}{\partial x} = 0 \label{ql} $ on obtient
+
+$$
+\begin{pmatrix}
+   h_{t} + uu_{x}+hu_{x}\\
+    u_{t} + gh_{x}+uu_{x}\\
+\end{pmatrix} = \begin{pmatrix}
+h_{t} + q_{x} \\
+u_{t} + (gh+u^{2})_{x}\\
+\end{pmatrix} =
+\begin{pmatrix}
+0 \\
+0\\
+\end{pmatrix}
+$$
+
+En utilisant la première équation du système \eqref{sveq1} et la loi de conservation \eqref{cl} dans le cas $Z\equiv 0$.
 
 \end{proof}
 
@@ -440,7 +823,6 @@ $
 
 \begin{proof} Le résultat est direct en faisant le produit matriciel si on connait les expressions de $\mathbb{D}(\textbf{W})$ et $\mathbb{P}(\textbf{W})$. Dans le cas contraire, on procède comme suit :
 
-\
 
 On détermine les valeurs propres de la matrice $\mathbb{A}(\textbf{W})$, ce qui conduit à chercher les racines du polynôme (d'indéterminée $\lambda$) suivant :
 
@@ -461,8 +843,6 @@ $$\mathbb{D}(\textbf{W}) =\begin{pmatrix}
 \end{pmatrix}.
 $$
 
-\
-
 Il reste à déterminer la matrice de passage $\mathbb{P}(\textbf{W})$. Il s'agit de trouver 
 $\begin{pmatrix}
    a\\
@@ -475,11 +855,8 @@ $\begin{pmatrix}
 \end{pmatrix}
 $ un vecteur propre associé à $u -\sqrt{gh}$.
 
-\
-
 \underline{Pour le vecteur propre associé à $u +\sqrt{gh}$ :}
 
-\
 
 $$\mathbb{A}(\textbf{W}) \begin{pmatrix}
    a\\
@@ -495,7 +872,6 @@ $$\mathbb{A}(\textbf{W}) \begin{pmatrix}
    b\\
 \end{pmatrix}$$
 
-\
 
 Il s'agit d'un système lié donc il est équivalent de raisonner sur la première équation :
 
@@ -503,7 +879,6 @@ $$au+bh = au+ a\sqrt{gh}$$
 
 $$\Leftrightarrow bh = a\sqrt{gh}$$
 
-\
 
 et on voit que $\begin{pmatrix}
    a\\
@@ -513,17 +888,13 @@ et on voit que $\begin{pmatrix}
    1\\
 \end{pmatrix}$ convient.
 
-\
-
 De même, \underline{pour le vecteur propre associé à $u -\sqrt{gh}$ :}
 
-\
 
 Cette fois on arrive à $$cu+dh = cu- c\sqrt{gh}$$
 
 $$\Leftrightarrow dh = -c\sqrt{gh}$$
 
-\
 
 et on voit que $\begin{pmatrix}
    c\\
@@ -533,7 +904,6 @@ et on voit que $\begin{pmatrix}
    1\\
 \end{pmatrix}$ convient.
 
-\
 
 D'où finalement : $$\mathbb{P}(\textbf{W}) =\begin{pmatrix}
    \frac{\sqrt{h}}{\sqrt{g}} & -\frac{\sqrt{h}}{\sqrt{g}} \\
@@ -559,8 +929,6 @@ $$J_{\textbf{F}}(h, q) =\begin{pmatrix}
    -\frac{q^{2}}{h^{2}}+gh & \frac{2q}{h}  \\
 \end{pmatrix}$$
 
-\
-
 Pour déterminer les valeurs propres de cette matrice, il faut calculer les racines du polynôme donné par
 
 $$\det (J_{\textbf{F}}(h, q)) =\begin{vmatrix}
@@ -571,149 +939,541 @@ $$\det (J_{\textbf{F}}(h, q)) =\begin{vmatrix}
 et $$-\lambda(\frac{2q}{h}-\lambda)+\frac{q^{2}}{h^{2}}-gh=0$$
 $$\Leftrightarrow \lambda^{2}-2u\lambda+u^{2}-gh=0.$$
 
-\
-
 Puisque $\Delta=4u^{2}-4(u^{2}-gh)=4gh>0\phantom{.}$, il y a deux racines distinctes 
 $$\lambda_{1}(\textbf{U})=\frac{2u+2\sqrt{gh}}{2} \phantom{..}\text{et}\phantom{..} \lambda_{2}(\textbf{U})=\frac{2u-2\sqrt{gh}}{2}.$$
 En simplifiant par 2 au numérateur et dénominateur, on voit qu'il s'agit des valeurs propres de  $\mathbb{A}(\textbf{W}).$
 
 \end{proof}
 
-Dans la mesure ou la matrice jacobienne du flux a deux valeurs propres différentes, on peut appliquer le schéma de Rusanov.
-Cf l'énoncé du TP. Mais il faudrait pouvoir expliquer pourquoi.
+Les expressions de ces valeurs propres vont être utiles par la suite : elles vont en effet apparaître de fa\c con explicite dans le schéma que nous allons utiliser ; et donc dans le code de l'implémentation.
+
+Plus précisément : le système d'EDP de Saint-Venant est tel que la matrice jacobienne du flux admet deux valeurs propres distinctes. On parle alors de système hyperbolique.
+Dans ce contexte, on peut appliquer le schéma dit de Rusanov, auquel est associé une condition CFL qui assure la stabilité. Nous allons développer ce point dans la partie suivante consacrée à ce schéma.
+
+\section{Le schéma de Rusanov}
+
+\subsection{Présentation du schéma et résultats de convergence}
+
+...
 
 \subsection{Validation de l'implémentation avec des tests}
 
-Dans cette partie, nous allons effectuer des tests sur notre implémentation.
+Dans cette partie, nous allons effectuer des tests de notre implémentation (dont le code est en annexe).
+Dans un premier temps, nous allons comparer nos résultats à des tests trouvés dans des ouvrages de référence.
+Dans un second temps, nous allons observer numériquement la convergence des solutions calculées.
 
-\
+\subsubsection{Quelques exemples}
+
+\paragraph{Le test du lac} \
+
+Voyons d'abord un premier test trivial : en prenant une hauteur d'eau plate et un débit initial identiquement égal à zéro, on s'attend à ce que l'eau reste plate au cours du temps.
+On vérifie 	alors avec les plots de la figure... que le schéma fonctionne bien sur cet exemple.
+
+\begin{figure}
+\includegraphics[scale = .6]{"plat0"}
+\includegraphics[scale = .6]{"plat10"} 
+\caption{Un premier test : évolution d'une hauteur d'eau plate}
+\end{figure}
+
+\paragraph{Le test de la goutte d'eau} \
+
+Partons maintenant de la condition initiale suivante : une bosse d'eau au milieu du domaine sans débit initial.
+
+\begin{figure}
+\centering
+\includegraphics[scale = .7]{"bosse0"}
+\end{figure}
+
+Intuitivement, on s'attend à ce que la \og goutte \fg{} tombe et forme deux vagues qui partent vers chacun des deux bords du domaine.
+C'est aussi ce que nous dit la référence \cite{RL} à la page 257. Et effectivement, voici ce que l'on observe (après environ 3 secondes et 8 secondes) :
+
+\begin{figure}
+\includegraphics[scale = .6]{"bosse4"}
+\includegraphics[scale = .6]{"bosse10"} 
+\caption{Un deuxième test : une goutte d'eau}
+\end{figure}
+
+\paragraph{Le test de la rupture de barrage} \
+
+Regardons maintenant un dernier test classique dans la littérature : la rupture de barrage.
+
+\begin{figure}
+\centering
+\includegraphics[scale = .7]{"barrage0"}
+\end{figure}
+
+L'eau forme une courbe en escalier (d'une seule marche) comme si elle était contenue dans une digue. On observe son évolution comme si la digue disparaissait juste après l'instant initial ; d'où le nom de
+rupture de barrage. On observe le résultat suivant :
+
+\begin{figure}
+\includegraphics[scale = .6]{"barrage1"}
+\includegraphics[scale = .6]{"barrage5"} 
+\caption{Un deuxième test : une goutte d'eau}
+\end{figure}
+
+Ce résultat est conforme à ce que l'on observe dans \cite{RL} page 259. La dynamique des solutions obtenues par notre implémentation est donc la bonne sur ces quelques tests.
+
+\subsubsection{Convergence des solutions}
 
 D’abord nous allons observer numériquement la convergence de la solution numérique. Nous allons voir que lorsque le nombre $N$ grandit, 
-les courbes de $h$ et $q$ on tendance à se rapprocher d’une courbe limite. Au passage, on pourra observer ce qui semble être un effet régularisant de l'équation : même lorsque l'on prend un profil initial non dérivable pour la hauteur d'eau $h$, la solution se lisse (immédiatement ?). Cette propriété devra être vérifiée. On pourra essayer de la justifier si elle est vraie...
-
-\
-
-Puis nous regarderons l’influence du pas spatial. En particulier, nous verrons ce qu'il se passe lorsque la condition CFL n'est pas vérifiée.
-
-\
-
-Enfin, nous allons confronter nos résultats à des tests que l’on retrouve fréquemment dans la littérature (rupture de barrage, bosse d’eau, etc).
-
-\newpage
+les courbes de $h$ et $q$ on tendance à se rapprocher d’une courbe limite. Puis nous regarderons l’influence du pas spatial. En particulier, nous verrons ce qu'il se passe lorsque la condition CFL n'est pas vérifiée.
 
 \subsubsection{Influence du pas spatial et convergence de la solution}
-
 
 \begin{figure}[h]
 \begin{center}$
 \begin{array}{ccc}
-\includegraphics[scale = .15]{"deltaT=.5 tau t=0 N=16.png"} &
-\includegraphics[scale = .15]{"deltaT=.5 tau t=0 N=64.png"} &
-\includegraphics[scale = .15]{"deltaT=.5 tau t=0 N=256.png"}
+\includegraphics[scale = .35]{"deltaT=.5 tau t=0 N=16"} &
+\includegraphics[scale = .35]{"deltaT=.5 tau t=0 N=64"} &
+\includegraphics[scale = .35]{"deltaT=.5 tau t=0 N=256"}
 \\
-\includegraphics[scale = .15]{"deltaT=.5 tau t=10 N=16.png"} &
-\includegraphics[scale = .15]{"deltaT=.5 tau t=10 N=64.png"} &
-\includegraphics[scale = .15]{"deltaT=.5 tau t=10 N=256.png"}
+\includegraphics[scale = .35]{"deltaT=.5 tau t=10 N=16"} &
+\includegraphics[scale = .35]{"deltaT=.5 tau t=10 N=64"} &
+\includegraphics[scale = .35]{"deltaT=.5 tau t=10 N=256"}
 \\
-\includegraphics[scale = .15]{"deltaT=.5 tau t=20 N=16.png"} &
-\includegraphics[scale = .15]{"deltaT=.5 tau t=20 N=64.png"} &
-\includegraphics[scale = .15]{"deltaT=.5 tau t=20 N=256.png"}
+\includegraphics[scale = .35]{"deltaT=.5 tau t=20 N=16"} &
+\includegraphics[scale = .35]{"deltaT=.5 tau t=20 N=64"} &
+\includegraphics[scale = .35]{"deltaT=.5 tau t=20 N=256"}
 \\
-\includegraphics[scale = .15]{"deltaT=.5 tau t=30 N=16.png"} &
-\includegraphics[scale = .15]{"deltaT=.5 tau t=30 N=64.png"} &
-\includegraphics[scale = .15]{"deltaT=.5 tau t=30 N=256.png"}
+\includegraphics[scale = .35]{"deltaT=.5 tau t=30 N=16"} &
+\includegraphics[scale = .35]{"deltaT=.5 tau t=30 N=64"} &
+\includegraphics[scale = .35]{"deltaT=.5 tau t=30 N=256"}
 \end{array}$
 \end{center}
 \caption{Simulations pour $N$ $=$ $16,$ $64$ et $256$}
 \end{figure}
 
 
-
-
-
 \subsubsection{Influence du pas temporel}
 
-Voici des représentations de la solution à différents instants (approximativement $t=0, 5, 10, 15$ et $20$ secondes) avec pas de temps égal $0.5\tau, \tau$ et $2\tau$ ; $\tau$ étant défini par ...
+Voici des représentations de la solution à différents instants (approximativement $t=0, 5, 10, 15$ et $20$ secondes) avec pas de temps égal $0.5\tau, \tau$ et $2\tau$ :
 
 \begin{figure}[h]
 \begin{center}$
 \begin{array}{ccc}
-\includegraphics[scale = .15]{"t0_tau05"} &
-\includegraphics[scale = .15]{"t0_tau"} &
-\includegraphics[scale = .15]{"t0_tau2"}
+\includegraphics[scale = .35]{"t0_tau05"} &
+\includegraphics[scale = .35]{"t0_tau"} &
+\includegraphics[scale = .35]{"t0_tau2"}
 \\
-\includegraphics[scale = .15]{"t5_tau05"} &
-\includegraphics[scale = .15]{"t5_tau"} &
-\includegraphics[scale = .15]{"t5_tau2"}
+\includegraphics[scale = .35]{"t5_tau05"} &
+\includegraphics[scale = .35]{"t5_tau"} &
+\includegraphics[scale = .35]{"t5_tau2"}
 \\
-\includegraphics[scale = .15]{"t10_tau05"} &
-\includegraphics[scale = .15]{"t10_tau"} &
-\includegraphics[scale = .15]{"t10_tau2"}
+\includegraphics[scale = .35]{"t10_tau05"} &
+\includegraphics[scale = .35]{"t10_tau"} &
+\includegraphics[scale = .35]{"t10_tau2"}
 \\
-\includegraphics[scale = .15]{"t15_tau05"} &
-\includegraphics[scale = .15]{"t15_tau"} &
-\includegraphics[scale = .15]{"t15_tau2"}
+\includegraphics[scale = .35]{"t15_tau05"} &
+\includegraphics[scale = .35]{"t15_tau"} &
+\includegraphics[scale = .35]{"t15_tau2"}
 \end{array}$
 \end{center}
 \caption{Simulations pour différentes valeurs de $\tau$}
 \end{figure}
 
-\
+On remarque immédiatement l'influence du pas temporel sur la conservation de la quantité d'eau. Plus le pas est choisi petit et meilleure est la conservation. On observe une dynamique similaire pour les deux cas qui respectent la condition CFL ($\tau$ et $0.5\tau$). Néanmoins, les évolutions sont quelque peu différentes (la vague issue de la rupture de barrage se déplace plus lentement lorsque le pas de temps est $0.5\tau$ ; cette différence dans les deux solutions obtenues vient peut être du fait que la condition doit être respectée strictement). Lorsque la condition CFL n'est pas vérifiée, l'évolution est très différente.
 
-On remarque immédiatement l'influence du pas temporel sur la conservation de la quantité d'eau. Plus le pas est choisi petit et meilleure est la conservation. On observe une dynamique similaire pour les deux cas qui respectent la condition CFL ($\tau$ et $0.5\tau$). Néanmoins, les évolutions sont quelque peu différentes (la vague issue de la rupture de barrage se déplace plus lentement lorsque le pas de temps est $0.5\tau$ ; cette différence dans les deux solutions obtenues vient peut être du fait que la condition doit être respectée strictement... à éclaircir). Lorsque la condition CFL n'est pas vérifiée, l'évolution est très différente.
 
-\
-
-On retrouve le même phénomène dans le cas de la goutte d'eau qui tombe au centre du repère : voici les mêmes représentations pour $t=0, 10, 20, 30$ secondes, avec un pas de temps égal à $0.5\tau, \tau$ et $2\tau$.
+On retrouve le même phénomène dans le cas de la goutte d'eau qui tombe au centre du repère : voici les représentations pour $t=0, 10, 20, 30$ secondes, avec un pas de temps égal à $0.5\tau, \tau$ et $2\tau$.
 
 \begin{figure}[h]
 \begin{center}$
 \begin{array}{ccc}
-\includegraphics[scale = .15]{"deltaT=.5 tau t=0 N=64.png"} &
-\includegraphics[scale = .15]{"deltaT=.5 tau t=0 N=64.png"} &
-\includegraphics[scale = .15]{"deltaT=.5 tau t=0 N=64.png"}
+\includegraphics[scale = .35]{"deltaT=.5 tau t=0 N=64"} &
+\includegraphics[scale = .35]{"deltaT=.5 tau t=0 N=64"} &
+\includegraphics[scale = .35]{"deltaT=.5 tau t=0 N=64"}
 \\
-\includegraphics[scale = .15]{"deltaT=.5 tau t=10 N=64.png"} &
-\includegraphics[scale = .15]{"deltaT=tau t=10 N=64.png"} &
-\includegraphics[scale = .15]{"deltaT=2tau t=10 N=64.png"}
+\includegraphics[scale = .35]{"deltaT=.5 tau t=10 N=64"} &
+\includegraphics[scale = .35]{"deltaT=tau t=10 N=64"} &
+\includegraphics[scale = .35]{"deltaT=2tau t=10 N=64"}
 \\
-\includegraphics[scale = .15]{"deltaT=.5 tau t=20 N=64.png"} &
-\includegraphics[scale = .15]{"deltaT=tau t=20 N=64.png"} &
-\includegraphics[scale = .15]{"deltaT=2tau t=20 N=64.png"}
+\includegraphics[scale = .35]{"deltaT=.5 tau t=20 N=64"} &
+\includegraphics[scale = .35]{"deltaT=tau t=20 N=64"} &
+\includegraphics[scale = .35]{"deltaT=2tau t=20 N=64"}
 \\
-\includegraphics[scale = .15]{"deltaT=.5 tau t=30 N=64.png"} &
-\includegraphics[scale = .15]{"deltaT=tau t=30 N=64.png"} &
-\includegraphics[scale = .15]{"deltaT=2tau t=30 N=64.png"}
+\includegraphics[scale = .35]{"deltaT=.5 tau t=30 N=64"} &
+\includegraphics[scale = .35]{"deltaT=tau t=30 N=64"} &
+\includegraphics[scale = .35]{"deltaT=2tau t=30 N=64"}
 \end{array}$
 \end{center}
 \caption{Simulations pour différentes valeurs de $\tau$}
 \end{figure}
 
-\
 
 De même, plus le pas temporel est faible, plus la quantité d'eau est conservée au cours du temps. On remarque aussi que la quantité d'eau est bien conservée quand la vague est au centre du repère. Cependant, quand elle atteint le bord et disparait aux limites, la quantité d'eau baisse brutalement ( il suffit de comparer la quantité entre $t=0\ s$ et $t=20\ s$ puis la quantité entre $t=20\ s$ et $t=30\ s$ ). 
 
-\
-
-\subsubsection{Confrontation de l'implémentation à des références}
-
-
-
-
-
-\section{Utilisation des limiteurs de pente pour une montée en ordre}
-
-\section{Passage au cas 2D}
 
 \newpage
 \renewcommand{\thesection}{\Alph{section}}
 \appendix
 \section{Annexes}
-\subsection{Le code}
+
+    \hypertarget{impluxe9mentation-du-schuxe9ma-de-rusanov}{%
+\subsection{Le code : implémentation du schéma de
+Rusanov}\label{impluxe9mentation-du-schuxe9ma-de-rusanov}}
+
+Voici le code à partir duquel nous avons obtenu les graphes du rapport.
+Ce code permet aussi de générer des fichier .gif et ainsi de visualiser
+les évolutions (hauteur d'eau et débit) au cours du temps.
+
+    \hypertarget{importations}{%
+\subsubsection*{Importations}\label{importations}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{math} \PY{k}{as} \PY{n+nn}{math} \PY{c+c1}{\PYZsh{} Pour les fonctions math}
+\PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt} \PY{c+c1}{\PYZsh{} Pour l\PYZsq{}affichage des graphes}
+\PY{k+kn}{from} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{backends}\PY{n+nn}{.}\PY{n+nn}{backend\PYZus{}agg} \PY{k+kn}{import} \PY{n}{FigureCanvasAgg} \PY{k}{as} \PY{n}{FigureCanvas}
+\PY{k+kn}{from} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{figure} \PY{k+kn}{import} \PY{n}{Figure}
+\PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np} \PY{c+c1}{\PYZsh{} Pour les tableaux numpy}
+\PY{k+kn}{import} \PY{n+nn}{imageio} \PY{c+c1}{\PYZsh{} Pour faire des .gif}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{paramuxe8tres-du-probluxe8me}{%
+\subsubsection*{Paramètres du problème}\label{paramuxe8tres-du-probluxe8me}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{g}\PY{o}{=}\PY{l+m+mi}{1} \PY{c+c1}{\PYZsh{} Constante gravitationnelle}
+
+\PY{n}{xMin}\PY{o}{=}\PY{l+m+mi}{0} \PY{c+c1}{\PYZsh{} Bord gauche du domaine}
+\PY{n}{xMax}\PY{o}{=}\PY{l+m+mi}{100} \PY{c+c1}{\PYZsh{} Bord droit du domaine}
+
+\PY{n}{N}\PY{o}{=}\PY{l+m+mi}{512} \PY{c+c1}{\PYZsh{} Nombre de points (strictement à l\PYZsq{}intérieur)}
+\PY{c+c1}{\PYZsh{} Donc au total, on considère N+2 points avec les bords}
+\PY{n}{h}\PY{o}{=}\PY{p}{(}\PY{n}{xMax}\PY{o}{\PYZhy{}}\PY{n}{xMin}\PY{p}{)}\PY{o}{/}\PY{p}{(}\PY{n}{N}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)} \PY{c+c1}{\PYZsh{} Pas du maillage spatial}
+
+\PY{n}{Tmax}\PY{o}{=}\PY{l+m+mi}{10} \PY{c+c1}{\PYZsh{} Temps final de la simulation}
+\PY{n}{t}\PY{o}{=}\PY{l+m+mi}{0} \PY{c+c1}{\PYZsh{} Temps dans la simulation}
+\PY{n}{n}\PY{o}{=}\PY{l+m+mi}{0} \PY{c+c1}{\PYZsh{} Nombre d\PYZsq{}itérations}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{conditions-initiales-et-topographie}{%
+\subsubsection*{Conditions initiales et
+Topographie}\label{conditions-initiales-et-topographie}}
+
+Dans la cellule ci-dessous, nous définissons la discrétisation de l'axe
+des abscisses \(\textbf{X}\), ainsi que la topographie \(\textbf{Z}\) et
+les profils initiaux de la hauteur d'eau \(h\) et du débit \(q\). Le
+code en commentaire correspond à différentes initialisations possibles.
+Pour le suite, notons
+\(\textbf{U}= \begin{pmatrix}  h \\  q \\ \end{pmatrix} \in\mathbb{R}^{2}\)
+le vecteur inconnu.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{X}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{linspace}\PY{p}{(}\PY{n}{xMin}\PY{p}{,}\PY{n}{xMax}\PY{p}{,}\PY{n}{N}\PY{o}{+}\PY{l+m+mi}{2}\PY{p}{)} \PY{c+c1}{\PYZsh{} Discrétisation de [xMin, xMax]}
+\PY{n}{U}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{ones}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{,}\PY{n}{N}\PY{o}{+}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{)} \PY{c+c1}{\PYZsh{} discrétisation du vecteur (h, q)}
+\PY{n}{Uprime}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{,}\PY{n}{N}\PY{o}{+}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{)} \PY{c+c1}{\PYZsh{} Va servir d\PYZsq{}intermédiaire de calcul}
+\PY{n}{Z}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{n}{N}\PY{o}{+}\PY{l+m+mi}{2}\PY{p}{)} \PY{c+c1}{\PYZsh{} Discrétisation du fond Z}
+ 
+\PY{c+c1}{\PYZsh{} Définitions de Z \PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}}
+
+\PY{c+c1}{\PYZsh{} Conditions initiales avec Z en créneau :}
+\PY{c+c1}{\PYZsh{} Z[(N+2)//5:2*(N+2)//5]=0.3}
+\PY{c+c1}{\PYZsh{} Z[3*(N+2)//5:4*(N+2)//5]=0.3}
+
+\PY{c+c1}{\PYZsh{} Conditions initiales avec Z en bosse C infini :}
+\PY{c+c1}{\PYZsh{} Z=1/(1+.1*(X\PYZhy{}50)**2)}
+
+\PY{c+c1}{\PYZsh{} Conditions initiales avec Z en escalier descendant :}
+\PY{c+c1}{\PYZsh{} Z[0:(N+2)//4]=.75}
+\PY{c+c1}{\PYZsh{} Z[(N+2)//4:3*(N+2)//4]=0.25}
+
+\PY{c+c1}{\PYZsh{} Conditions initiales avec Z en tangente hyperbolique :}
+\PY{c+c1}{\PYZsh{} Z=np.tanh(5\PYZhy{}X)/2+.5}
 
 
-%----------------------------------------------------------------------------------------
-%	BIBLIOGRAPHY
+\PY{c+c1}{\PYZsh{} Définitions du h initial \PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}}
+
+\PY{c+c1}{\PYZsh{} Hauteur de l\PYZsq{}eau en escalier }
+\PY{n}{U}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{:}\PY{p}{(}\PY{n}{N}\PY{o}{+}\PY{l+m+mi}{2}\PY{p}{)}\PY{o}{/}\PY{o}{/}\PY{l+m+mi}{3}\PY{p}{]}\PY{o}{=}\PY{l+m+mi}{3}\PY{o}{\PYZhy{}}\PY{n}{Z}\PY{p}{[}\PY{p}{:}\PY{p}{(}\PY{n}{N}\PY{o}{+}\PY{l+m+mi}{2}\PY{p}{)}\PY{o}{/}\PY{o}{/}\PY{l+m+mi}{3}\PY{p}{]}
+\PY{c+c1}{\PYZsh{} U[0,(N+2)//3:N+2]=1.25\PYZhy{}Z[(N+2)//3:N+2]}
+
+\PY{c+c1}{\PYZsh{} Hauteur de l\PYZsq{}eau constante}
+\PY{c+c1}{\PYZsh{} U[0,:]=1\PYZhy{}Z}
+
+\PY{c+c1}{\PYZsh{} Hauteur de l\PYZsq{}eau en bosse}
+\PY{c+c1}{\PYZsh{} U[0,:]=1+2/(1+.05*(X\PYZhy{}50)**2)\PYZhy{}Z}
+
+
+\PY{c+c1}{\PYZsh{} Définitions du q initial \PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}}
+
+\PY{c+c1}{\PYZsh{} Débit de l\PYZsq{}eau constant}
+\PY{n}{U}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{p}{:}\PY{p}{]}\PY{o}{=}\PY{l+m+mi}{0}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{nombre-de-sauvegardes-durant-la-simulation}{%
+\subsubsection*{Nombre de sauvegardes durant la
+simulation}\label{nombre-de-sauvegardes-durant-la-simulation}}
+
+Quelques variables qui vont nous servir pour enregistrer des étapes de
+la simulation, sans pour autant les sauvegarder toutes. Sans ça, le
+nombre d'images à sauver deviendrait vite trop important.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{nSauvegarde}\PY{o}{=}\PY{l+m+mi}{10} \PY{c+c1}{\PYZsh{} Nombre de sauvegardes au cours de la simulation}
+\PY{n}{tSauvegarde}\PY{o}{=}\PY{p}{[}\PY{k+kc}{False} \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{nSauvegarde}\PY{p}{)}\PY{p}{]}
+\PY{n}{images}\PY{o}{=}\PY{p}{[}\PY{p}{]}
+\PY{n}{j}\PY{o}{=}\PY{l+m+mi}{0} \PY{c+c1}{\PYZsh{} Nombre de sauvegardes déjà effectuées}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{affichage-des-images}{%
+\subsubsection*{Affichage des images}\label{affichage-des-images}}
+
+La fonction ci-dessous permet de gérer l'affichage de la solution. Elle
+est suivie d'un test. Les graphes qui s'affichent sont ceux de \(h\) et
+\(q\) à \(t=0\).
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{affiche\PYZus{}U}\PY{p}{(}\PY{n}{t}\PY{p}{)}\PY{p}{:}
+    
+    \PY{n}{t\PYZus{}int}\PY{o}{=}\PY{n+nb}{round}\PY{p}{(}\PY{n}{t}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{)} \PY{c+c1}{\PYZsh{} Troncature de t après la 4eme décimale}
+    
+    \PY{n}{fig}\PY{p}{,}\PY{n}{axs}\PY{o}{=}\PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{,}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{12}\PY{p}{,}\PY{l+m+mi}{8}\PY{p}{)}\PY{p}{)}
+    
+    \PY{n}{fig}\PY{o}{.}\PY{n}{suptitle}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{t = }\PY{l+s+s2}{\PYZdq{}}\PY{o}{+}\PY{n+nb}{str}\PY{p}{(}\PY{n}{t\PYZus{}int}\PY{p}{)}\PY{p}{,}\PY{n}{style}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{italic}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{size}\PY{o}{=}\PY{l+m+mi}{30}\PY{p}{)}
+    \PY{n}{fig}\PY{o}{.}\PY{n}{tight\PYZus{}layout}\PY{p}{(}\PY{p}{)}
+    
+    \PY{n}{plt}\PY{o}{.}\PY{n}{rc}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{font}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{size}\PY{o}{=}\PY{l+m+mi}{20}\PY{p}{)}
+    
+    \PY{n}{h\PYZus{}z}\PY{o}{=}\PY{n}{U}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{p}{:}\PY{p}{]}\PY{o}{+}\PY{n}{Z}
+    
+    \PY{n}{axs}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{X}\PY{p}{,}\PY{n}{h\PYZus{}z}\PY{p}{)}
+    \PY{n}{axs}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{h}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{fontweight}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{bold}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{pad}\PY{o}{=}\PY{l+m+mi}{15}\PY{p}{)}
+    \PY{n}{axs}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}xlim}\PY{p}{(}\PY{p}{[}\PY{n}{xMin}\PY{p}{,}\PY{n}{xMax}\PY{p}{]}\PY{p}{)}
+    \PY{n}{axs}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}ylim}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{]}\PY{p}{)}
+    \PY{n}{axs}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{fill\PYZus{}between}\PY{p}{(}\PY{n}{X}\PY{p}{,}\PY{n}{Z}\PY{p}{,}\PY{n}{step}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{pre}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{alpha}\PY{o}{=}\PY{l+m+mf}{0.5}\PY{p}{,}\PY{n}{color}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{grey}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    
+    \PY{n}{axs}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{X}\PY{p}{,}\PY{n}{U}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{p}{:}\PY{p}{]}\PY{p}{)}
+    \PY{n}{axs}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{q}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{fontweight}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{bold}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{pad}\PY{o}{=}\PY{l+m+mi}{15}\PY{p}{)}
+    \PY{n}{axs}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}xlim}\PY{p}{(}\PY{p}{[}\PY{n}{xMin}\PY{p}{,}\PY{n}{xMax}\PY{p}{]}\PY{p}{)}
+    \PY{n}{axs}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}ylim}\PY{p}{(}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{4}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{]}\PY{p}{)}
+    
+    \PY{c+c1}{\PYZsh{} axs[1].set\PYZus{}xlabel(\PYZdq{}Quantité d\PYZsq{}eau : \PYZdq{}+str(round(sum(U[0,:])*h,2)))}
+    
+    \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+
+\PY{n}{affiche\PYZus{}U}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{)} \PY{c+c1}{\PYZsh{} Test d\PYZsq{}affichage de la solution}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \includegraphics[scale=0.75]{output_10_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{sauvegarde-des-images}{%
+\subsubsection*{Sauvegarde des images}\label{sauvegarde-des-images}}
+
+\emph{enregistre\_U} effectue un traitement identique à
+\emph{affiche\_U}. La seule différence est qu'elle enregistre le plot
+dans le répertoire courant plutôt que de l'afficher.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{6}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{enregistre\PYZus{}U}\PY{p}{(}\PY{n}{n}\PY{p}{,}\PY{n}{t}\PY{p}{)}\PY{p}{:}
+
+    \PY{n}{t\PYZus{}int}\PY{o}{=}\PY{n+nb}{round}\PY{p}{(}\PY{n}{t}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{)} \PY{c+c1}{\PYZsh{} Troncature de t après la 4eme décimale}
+      
+    \PY{n}{fig}\PY{p}{,}\PY{n}{axs}\PY{o}{=}\PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{,}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{12}\PY{p}{,}\PY{l+m+mi}{8}\PY{p}{)}\PY{p}{)}
+    
+    \PY{n}{fig}\PY{o}{.}\PY{n}{suptitle}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{t = }\PY{l+s+s2}{\PYZdq{}}\PY{o}{+}\PY{n+nb}{str}\PY{p}{(}\PY{n}{t\PYZus{}int}\PY{p}{)}\PY{p}{,}\PY{n}{style}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{italic}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{size}\PY{o}{=}\PY{l+m+mi}{30}\PY{p}{)}
+    \PY{n}{fig}\PY{o}{.}\PY{n}{tight\PYZus{}layout}\PY{p}{(}\PY{p}{)}
+    
+    \PY{n}{plt}\PY{o}{.}\PY{n}{rc}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{font}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{size}\PY{o}{=}\PY{l+m+mi}{20}\PY{p}{)}
+    
+    \PY{n}{h\PYZus{}z} \PY{o}{=} \PY{n}{U}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{p}{:}\PY{p}{]}\PY{o}{+}\PY{n}{Z}
+    
+    \PY{n}{axs}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{X}\PY{p}{,}\PY{n}{h\PYZus{}z}\PY{p}{)}
+    \PY{n}{axs}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{h}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{fontweight}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{bold}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{pad}\PY{o}{=}\PY{l+m+mi}{15}\PY{p}{)}
+    \PY{n}{axs}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}xlim}\PY{p}{(}\PY{p}{[}\PY{n}{xMin}\PY{p}{,}\PY{n}{xMax}\PY{p}{]}\PY{p}{)}
+    \PY{n}{axs}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}ylim}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{]}\PY{p}{)}
+    \PY{n}{axs}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{fill\PYZus{}between}\PY{p}{(}\PY{n}{X}\PY{p}{,}\PY{n}{Z}\PY{p}{,}\PY{n}{step}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{pre}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{alpha}\PY{o}{=}\PY{l+m+mf}{0.5}\PY{p}{,}\PY{n}{color}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{grey}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    
+    \PY{n}{axs}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{X}\PY{p}{,}\PY{n}{U}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{p}{:}\PY{p}{]}\PY{p}{)}
+    \PY{n}{axs}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{q}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{fontweight}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{bold}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{pad}\PY{o}{=}\PY{l+m+mi}{15}\PY{p}{)}
+    \PY{n}{axs}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}xlim}\PY{p}{(}\PY{p}{[}\PY{n}{xMin}\PY{p}{,}\PY{n}{xMax}\PY{p}{]}\PY{p}{)}
+    \PY{n}{axs}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}ylim}\PY{p}{(}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{4}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{]}\PY{p}{)}
+    
+    \PY{c+c1}{\PYZsh{} axs[1].set\PYZus{}xlabel(\PYZdq{}Quantité d\PYZsq{}eau : \PYZdq{}+str(round(sum(U[0,:])*h,2)))}
+    
+    \PY{c+c1}{\PYZsh{} To remove the huge white borders}
+    \PY{n}{axs}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{margins}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{)}
+    \PY{n}{axs}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{.}\PY{n}{margins}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{)}
+
+    \PY{n}{fig}\PY{o}{.}\PY{n}{canvas}\PY{o}{.}\PY{n}{draw}\PY{p}{(}\PY{p}{)}
+    \PY{n}{image\PYZus{}from\PYZus{}plot}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{frombuffer}\PY{p}{(}\PY{n}{fig}\PY{o}{.}\PY{n}{canvas}\PY{o}{.}\PY{n}{tostring\PYZus{}rgb}\PY{p}{(}\PY{p}{)}\PY{p}{,} \PY{n}{dtype}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{uint8}\PY{p}{)}
+    \PY{n}{image\PYZus{}from\PYZus{}plot}\PY{o}{=}\PY{n}{image\PYZus{}from\PYZus{}plot}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{n}{fig}\PY{o}{.}\PY{n}{canvas}\PY{o}{.}\PY{n}{get\PYZus{}width\PYZus{}height}\PY{p}{(}\PY{p}{)}\PY{p}{[}\PY{p}{:}\PY{p}{:}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{+}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{,}\PY{p}{)}\PY{p}{)}
+    
+    \PY{n}{images}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{image\PYZus{}from\PYZus{}plot}\PY{p}{)}
+    
+    \PY{c+c1}{\PYZsh{}Sauvegarde dans un fichier .png}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{savefig}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{etape}\PY{l+s+s2}{\PYZdq{}}\PY{o}{+}\PY{n+nb}{str}\PY{p}{(}\PY{n}{n}\PY{p}{)}\PY{o}{+}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{.png}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    
+    \PY{n}{plt}\PY{o}{.}\PY{n}{close}\PY{p}{(}\PY{p}{)}
+    
+\PY{n}{enregistre\PYZus{}U}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{fonctions-qui-interviennent-dans-le-schuxe9ma}{%
+\subsubsection*{Fonctions qui interviennent dans le
+schéma}\label{fonctions-qui-interviennent-dans-le-schuxe9ma}}
+
+\(\textbf{U}= \begin{pmatrix}  h \\  q \\ \end{pmatrix} \in\mathbb{R}^{2}\)
+est le vecteur inconnu. Les différentes fonctions du schéma qu'il s'agit
+d'implémenter sont \(\textbf{F}(\textbf{U})\),
+\(\textbf{B}(\textbf{U})\) et \(\mathcal{F}_{i+\frac{1}{2}}^n\).
+Rappelons les différentes définitions :
+
+\[
+\textbf{F} (\textbf{U}) =
+\begin{pmatrix}
+   q                                \\
+   \frac{q^{2}}{h}+g\frac{h^{2}}{2} \\
+\end{pmatrix}\in\mathbb{R}^{2} ~
+\text{et} ~~ \textbf{B} (\textbf{U}) =
+\begin{pmatrix}
+   0                                \\
+   -gh \frac{\partial Z}{\partial x}\\
+\end{pmatrix}
+\in\mathbb{R}^{2}.
+\]
+
+\(\textbf{F} (\textbf{U})\) désigne la fonction flux et
+\(\textbf{B} (\textbf{U})\) le terme source. Avec ces notations, le
+système de départ se réécrit :
+
+\[\frac{\partial\textbf{U}}{\partial t}+\frac{\partial}{\partial x}(\textbf{F} (\textbf{U})) = \textbf{B} (\textbf{U}).\]
+
+Et si l'on suppose que \(Z\equiv 0\), alors le schéma s'écrit simplement
+:
+
+\[\frac{\textbf{U}_i^{n+1}-\textbf{U}_i^{n}}{\Delta t^n}+\frac{\mathcal{F}_{i+\frac{1}{2}}^n - \mathcal{F}_{i-\frac{1}{2}}^n}{\Delta x_i}=0\]
+
+Avec
+\[\mathcal{F}_{i+\frac{1}{2}}^n=\frac{\textbf{F}(\textbf{U}_i^{n})+\textbf{F}(\textbf{U}_{i+1}^{n})}{2}-\max_{j\in\{i,i+1\}}\max_{k\in\{1,2\}}|\lambda_k(\textbf{U}_j^n)|\frac{\textbf{U}_{i+1}^n-\textbf{U}_i^n}{2}.\]
+
+En prenant une topographie \(Z\) non triviale, on peut essayer de
+prendre le même schéma en rajoutant le terme source. Si l'on a accès à
+la dérivée \(Z'\) de \(Z\), le schéma s'écrit alors :
+
+\[\frac{\textbf{U}_i^{n+1}-\textbf{U}_i^{n}}{\Delta t^n}+\frac{\mathcal{F}_{i+\frac{1}{2}}^n - \mathcal{F}_{i-\frac{1}{2}}^n}{\Delta x_i}= \begin{pmatrix}
+0 \\
+-gh_i Z'_i\\
+\end{pmatrix}\]
+
+ou bien en utilisant des différences finies centrées pour approcher les
+dérivées :
+
+\[\frac{\textbf{U}_i^{n+1}-\textbf{U}_i^{n}}{\Delta t^n}+\frac{\mathcal{F}_{i+\frac{1}{2}}^n - \mathcal{F}_{i-\frac{1}{2}}^n}{\Delta x_i}= \begin{pmatrix}
+0 \\
+-gh_i \frac{Z_{i+1}-Z_{i-1}}{2\Delta x_i}\\
+\end{pmatrix}\]
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{7}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Fonction F du schéma :}
+\PY{c+c1}{\PYZsh{} Entrée : vecteur U = (h, q) (type numpy.ndarray)}
+\PY{c+c1}{\PYZsh{} Sortie : F(U) (type numpy.ndarray)}
+\PY{k}{def} \PY{n+nf}{F}\PY{p}{(}\PY{n}{U}\PY{p}{)}\PY{p}{:}
+    \PY{k}{return} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{n}{U}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,}\PY{n}{U}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{o}{/}\PY{n}{U}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{+}\PY{n}{g}\PY{o}{*}\PY{n}{U}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Fonction B du schéma :}
+\PY{c+c1}{\PYZsh{} Entrées : * vecteur U = (h, q) (type numpy.ndarray)}
+\PY{c+c1}{\PYZsh{}           * valeur dxZ de la dérivée spatiale de Z }
+\PY{c+c1}{\PYZsh{} Sortie : B(U) (type numpy.ndarray)}
+\PY{k}{def} \PY{n+nf}{B}\PY{p}{(}\PY{n}{U}\PY{p}{,}\PY{n}{i}\PY{p}{)}\PY{p}{:}
+    \PY{k}{return} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{o}{\PYZhy{}}\PY{n}{g}\PY{o}{*}\PY{n}{U}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{*}\PY{p}{(}\PY{n}{Z}\PY{p}{[}\PY{n}{i}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{\PYZhy{}}\PY{n}{Z}\PY{p}{[}\PY{n}{i}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Fonction qui retourne la valeur propre max en module}
+\PY{c+c1}{\PYZsh{} Entrées : * U solution discrétisée (type numpy.ndarray de taille 2*(N+2))}
+\PY{c+c1}{\PYZsh{}           * indice i de la position spatiale}
+\PY{c+c1}{\PYZsh{} Sortie : max\PYZus{}j max\PYZus{}k |lambda\PYZus{}k(U\PYZus{}j\PYZca{}n)|}
+\PY{k}{def} \PY{n+nf}{vmax}\PY{p}{(}\PY{n}{U}\PY{p}{,}\PY{n}{i}\PY{p}{)}\PY{p}{:}
+    \PY{n}{res} \PY{o}{=} \PY{n+nb}{abs}\PY{p}{(}\PY{n}{U}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{n}{i}\PY{p}{]}\PY{o}{/}\PY{n}{U}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{n}{i}\PY{p}{]}\PY{o}{+}\PY{n}{math}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{n}{g}\PY{o}{*}\PY{n}{U}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{n}{i}\PY{p}{]}\PY{p}{)}\PY{p}{)}
+    \PY{n}{res} \PY{o}{=} \PY{n+nb}{max}\PY{p}{(}\PY{n}{res}\PY{p}{,}\PY{n+nb}{abs}\PY{p}{(}\PY{n}{U}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{n}{i}\PY{p}{]}\PY{o}{/}\PY{n}{U}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{n}{i}\PY{p}{]}\PY{o}{\PYZhy{}}\PY{n}{math}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{n}{g}\PY{o}{*}\PY{n}{U}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{n}{i}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+    \PY{n}{res} \PY{o}{=} \PY{n+nb}{max}\PY{p}{(}\PY{n}{res}\PY{p}{,}\PY{n+nb}{abs}\PY{p}{(}\PY{n}{U}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{n}{i}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{/}\PY{n}{U}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{n}{i}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{+}\PY{n}{math}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{n}{g}\PY{o}{*}\PY{n}{U}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{n}{i}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+    \PY{n}{res} \PY{o}{=} \PY{n+nb}{max}\PY{p}{(}\PY{n}{res}\PY{p}{,}\PY{n+nb}{abs}\PY{p}{(}\PY{n}{U}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{n}{i}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{/}\PY{n}{U}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{n}{i}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{\PYZhy{}}\PY{n}{math}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{n}{g}\PY{o}{*}\PY{n}{U}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{n}{i}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+    \PY{k}{return} \PY{n}{res}
+
+\PY{c+c1}{\PYZsh{} Fonction flux numérique :}
+\PY{c+c1}{\PYZsh{} Entrées : * U solution discrétisée (type numpy.ndarray de taille 2*(N+2))}
+\PY{c+c1}{\PYZsh{}           * indice i de la position spatiale}
+\PY{c+c1}{\PYZsh{} Sortie : F\PYZus{}\PYZob{}i+1/2\PYZcb{}\PYZca{}n}
+\PY{k}{def} \PY{n+nf}{F\PYZus{}ronde}\PY{p}{(}\PY{n}{U}\PY{p}{,}\PY{n}{i}\PY{p}{)}\PY{p}{:}
+    \PY{k}{return} \PY{p}{(}\PY{n}{F}\PY{p}{(}\PY{n}{U}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{n}{i}\PY{p}{]}\PY{p}{)}\PY{o}{+}\PY{n}{F}\PY{p}{(}\PY{n}{U}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{n}{i}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{o}{/}\PY{l+m+mi}{2}\PY{o}{\PYZhy{}}\PY{n}{vmax}\PY{p}{(}\PY{n}{U}\PY{p}{,}\PY{n}{i}\PY{p}{)}\PY{o}{*}\PY{p}{(}\PY{n}{U}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{n}{i}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{\PYZhy{}}\PY{n}{U}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{n}{i}\PY{p}{]}\PY{p}{)}\PY{o}{/}\PY{l+m+mi}{2}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{boucle-de-ruxe9solution-numuxe9rique}{%
+\subsubsection*{Boucle de résolution
+numérique}\label{boucle-de-ruxe9solution-numuxe9rique}}
+
+Une fois le pas de temps \(\Delta t^n\) déterminé selon le critère qui
+garanti le respect de la conditions CFL, on passe du temps \(t^n\) au
+temps \(t^{n+1}\) suivant la relation explicite suivante :
+
+\[\textbf{U}_i^{n+1}=\textbf{U}_i^{n}-\Delta t^n\frac{\mathcal{F}_{i+\frac{1}{2}}^n - \Delta t^n\mathcal{F}_{i-\frac{1}{2}}^n}{\Delta x_i}+\Delta t^n \begin{pmatrix}
+0 \\
+-gh_i \frac{Z_{i+1}-Z_{i-1}}{2\Delta x_i}\\
+\end{pmatrix}\]
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{8}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{while}\PY{p}{(}\PY{n}{t}\PY{o}{\PYZlt{}}\PY{n}{Tmax}\PY{p}{)}\PY{p}{:} \PY{c+c1}{\PYZsh{} Tant que le temps max n\PYZsq{}est pas atteint :}
+    
+    \PY{n}{M} \PY{o}{=} \PY{n}{vmax}\PY{p}{(}\PY{n}{U}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{)}
+    \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{N}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{:}
+        \PY{n}{M} \PY{o}{=} \PY{n+nb}{max}\PY{p}{(}\PY{n}{M}\PY{p}{,} \PY{n}{vmax}\PY{p}{(}\PY{n}{U}\PY{p}{,} \PY{n}{i}\PY{p}{)}\PY{p}{)}
+    
+    \PY{c+c1}{\PYZsh{} Pour assurer la stabilité, tau doit être inférieur à h/(2* max(vp))}
+    \PY{n}{tau} \PY{o}{=} \PY{l+m+mf}{0.8}\PY{o}{*}\PY{n}{h}\PY{o}{/}\PY{p}{(}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{M}\PY{p}{)}
+    
+    \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{N}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{:}
+        \PY{n}{Uprime}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{n}{i}\PY{p}{]} \PY{o}{=} \PY{n}{U}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{n}{i}\PY{p}{]}\PY{o}{+}\PY{n}{tau}\PY{o}{/}\PY{n}{h}\PY{o}{*}\PY{p}{(}\PY{n}{F\PYZus{}ronde}\PY{p}{(}\PY{n}{U}\PY{p}{,}\PY{n}{i}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}\PY{o}{\PYZhy{}}\PY{n}{F\PYZus{}ronde}\PY{p}{(}\PY{n}{U}\PY{p}{,}\PY{n}{i}\PY{p}{)}\PY{p}{)}
+        \PY{n}{Uprime}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{n}{i}\PY{p}{]} \PY{o}{\PYZhy{}}\PY{o}{=} \PY{n}{tau}\PY{o}{*}\PY{n}{B}\PY{p}{(}\PY{n}{U}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{n}{i}\PY{p}{]}\PY{p}{,}\PY{n}{i}\PY{p}{)}
+        
+    \PY{n}{U} \PY{o}{=} \PY{n}{Uprime}
+    
+    \PY{c+c1}{\PYZsh{} Conditions aux bords}
+    \PY{n}{U}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{=} \PY{n}{U}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}
+    \PY{n}{U}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{n}{N}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{=} \PY{n}{U}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{n}{N}\PY{p}{]}
+
+    \PY{n}{t}\PY{o}{+}\PY{o}{=}\PY{n}{tau}
+    \PY{n}{n}\PY{o}{+}\PY{o}{=}\PY{l+m+mi}{1}
+    
+    \PY{k}{if} \PY{p}{(}\PY{n}{t} \PY{o}{\PYZgt{}} \PY{n}{Tmax}\PY{o}{/}\PY{n}{nSauvegarde}\PY{o}{*}\PY{n}{j} \PY{o+ow}{and} \PY{p}{(}\PY{n}{j}\PY{o}{\PYZlt{}}\PY{n}{nSauvegarde}\PY{p}{)} \PY{o+ow}{and} \PY{p}{(}\PY{o+ow}{not} \PY{n}{tSauvegarde}\PY{p}{[}\PY{n}{j}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+        \PY{n}{enregistre\PYZus{}U}\PY{p}{(}\PY{n}{n}\PY{p}{,}\PY{n}{t}\PY{p}{)}
+        \PY{c+c1}{\PYZsh{}affiche\PYZus{}U()}
+        \PY{n}{tSauvegarde}\PY{p}{[}\PY{n}{j}\PY{p}{]}\PY{o}{=}\PY{k+kc}{True}
+        \PY{n}{j}\PY{o}{+}\PY{o}{=}\PY{l+m+mi}{1}
+
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Nombre d}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{itérations : }\PY{l+s+s2}{\PYZdq{}} \PY{o}{+} \PY{n+nb}{str}\PY{p}{(}\PY{n}{n}\PY{p}{)}\PY{p}{)}
+\PY{n}{imageio}\PY{o}{.}\PY{n}{mimsave}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{movie.gif}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{images}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Gif Sauvegardé dans le dossier sous le nom : movie.gif}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Nombre d'itérations : 269
+Gif Sauvegardé dans le dossier sous le nom : movie.gif
+    \end{Verbatim}
 %----------------------------------------------------------------------------------------
 
 \begin{thebibliography}{9}
@@ -728,8 +1488,6 @@ De même, plus le pas temporel est faible, plus la quantité d'eau est conservé
 \href{https://fr.wikipedia.org/wiki/Intégrale_paramétrique#Dérivabilité}{ \textit{Intégrale paramétrique}}
 
 \end{thebibliography}
-
-%----------------------------------------------------------------------------------------
 
 \end{document}  
 
