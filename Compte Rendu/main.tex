@@ -751,7 +751,7 @@ $
 \end{center}
 
 $\textbf{U}$ désigne le vecteur inconnu, $\textbf{F} (\textbf{U})$ la fonction flux et $\textbf{B} (\textbf{U})$ le terme source. Avec ces notations,
-le système de départ se réécrit : $$\frac{\partial\textbf{U}}{\partial t}+\frac{\partial}{\partial x}(\textbf{F} (\textbf{U})) = \textbf{B} (\textbf{U}).$$
+le système de départ se réécrit : $$\frac{\partial\textbf{U}}{\partial t}+\frac{\partial}{\partial x}(\textbf{F} (\textbf{U})) = \textbf{B} (\textbf{U})$$
 
 Nous allons faire l'hypothèse que $Z \equiv 0$. Les résultats que nous allons montrer à partir de maintenant ne seront valables que pour une topographie $Z$ nulle.
 En particulier, l'utilisation du schéma de Rusanov hors de ce cadre relèvera d'une démarche empirique.
@@ -954,7 +954,29 @@ Dans ce contexte, on peut appliquer le schéma dit de Rusanov, auquel est associ
 
 \subsection{Présentation du schéma et résultats de convergence}
 
-...
+Divisons tout d'abord notre espace et notre temps avec les pas $\Delta x$ et $\Delta t$, respectivement. On cherche à discrétiser l'équation : 
+
+$$\frac{\partial\textbf{U}}{\partial t}+\frac{\partial}{\partial x}(\textbf{F} (\textbf{U})) = 0 \quad \textbf{Équation sans terme source} \label{EqRusanov} $$
+
+On pose ainsi $U_i ^n$ l'approximation de $U$ autour de la position $x_i$ à l'étape $t^n$. On peut donc noter :
+
+$$ U_i ^n = \frac{1}{\Delta x}\int_{x_{i-1/2}}^{x_{i+1/2}} U(x,t^n) \ dx $$
+
+En intégrant le premier terme de \ref{EqRusanov} entre $x_{i-1/2}$ et $x_{i+1/2}$, on a grâce à un développement de Taylor :
+
+$$ \int_{x_{i-1/2}}^{x_{i+1/2}} \frac{\partial\textbf{U}}{\partial t} \ dx = \int_{x_{i-1/2}}^{x_{i+1/2}} \frac{U(x,t^{n+1}) - U(x,t^{n})}{\Delta t} \ dx = \Delta x \frac{ U_i ^{n+1} - U_i ^{n}}{\Delta t} $$
+
+De même avec le second terme de \ref{EqRusanov} : 
+
+$$ \int_{x_{i-1/2}}^{x_{i+1/2}} \frac{\partial\textbf{F(U)}}{\partial x} \ dx =  F_{i-1/2} ^{n+1} - F_{i+1/2} ^{n} $$
+
+Avec $F_{i+1/2} ^n$ dépendant de $U_i ^n$ et $U_{i+1} ^n$.
+On a finalement :
+
+$$ \frac{ U_i ^{n+1} - U_i ^{n}}{\Delta t} + \frac{ F_{i-1/2} ^{n+1} - F_{i+1/2} ^{n} }{\Delta x} = 0 $$
+
+Toute la question est donc de savoir comment approcher le flux numérique $F_{i-1/2} ^{n+1}$ en fonction de $U_i ^n$ et $U_{i+1} ^n$. On se sert pour cela du théorème de Lax, qui stipule que la stabilité d'un schéma numérique consistant assure la convergence. La consistance est la notion décrivant à quel point le schéma numérique approche précisément l'équation de départ, tandis que la stabilité décrit la non-amplification de cette erreur d'approximation.
+
 
 \subsection{Validation de l'implémentation avec des tests}
 
@@ -988,8 +1010,8 @@ Intuitivement, on s'attend à ce que la \og goutte \fg{} tombe et forme deux vag
 C'est aussi ce que nous dit la référence \cite{RL} à la page 257. Et effectivement, voici ce que l'on observe (après environ 3 secondes et 8 secondes) :
 
 \begin{figure}
-\includegraphics[scale = .6]{"bosse4"}
-\includegraphics[scale = .6]{"bosse10"} 
+\includegraphics[scale = .6]{"bosse4.png"}
+\includegraphics[scale = .6]{"bosse10.png"} 
 \caption{Un deuxième test : une goutte d'eau}
 \end{figure}
 
@@ -1051,21 +1073,21 @@ Voici des représentations de la solution à différents instants (approximative
 \begin{figure}[h]
 \begin{center}$
 \begin{array}{ccc}
-\includegraphics[scale = .35]{"t0_tau05"} &
-\includegraphics[scale = .35]{"t0_tau"} &
-\includegraphics[scale = .35]{"t0_tau2"}
+\includegraphics[scale = .35]{"t0_tau05.png"} &
+\includegraphics[scale = .35]{"t0_tau.png"} &
+\includegraphics[scale = .35]{"t0_tau2.png"}
 \\
-\includegraphics[scale = .35]{"t5_tau05"} &
-\includegraphics[scale = .35]{"t5_tau"} &
-\includegraphics[scale = .35]{"t5_tau2"}
+\includegraphics[scale = .35]{"t5_tau05.png"} &
+\includegraphics[scale = .35]{"t5_tau.png"} &
+\includegraphics[scale = .35]{"t5_tau2.png"}
 \\
-\includegraphics[scale = .35]{"t10_tau05"} &
-\includegraphics[scale = .35]{"t10_tau"} &
-\includegraphics[scale = .35]{"t10_tau2"}
+\includegraphics[scale = .35]{"t10_tau05.png"} &
+\includegraphics[scale = .35]{"t10_tau.png"} &
+\includegraphics[scale = .35]{"t10_tau2.png"}
 \\
-\includegraphics[scale = .35]{"t15_tau05"} &
-\includegraphics[scale = .35]{"t15_tau"} &
-\includegraphics[scale = .35]{"t15_tau2"}
+\includegraphics[scale = .35]{"t15_tau05.png"} &
+\includegraphics[scale = .35]{"t15_tau.png"} &
+\includegraphics[scale = .35]{"t15_tau2.png"}
 \end{array}$
 \end{center}
 \caption{Simulations pour différentes valeurs de $\tau$}
