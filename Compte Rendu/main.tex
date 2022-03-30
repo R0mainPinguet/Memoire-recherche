@@ -968,14 +968,49 @@ $$ \int_{x_{i-1/2}}^{x_{i+1/2}} \frac{\partial\textbf{U}}{\partial t} \ dx = \in
 
 De même avec le second terme de \ref{EqRusanov} : 
 
-$$ \int_{x_{i-1/2}}^{x_{i+1/2}} \frac{\partial\textbf{F(U)}}{\partial x} \ dx =  F_{i-1/2} ^{n+1} - F_{i+1/2} ^{n} $$
+$$ \int_{x_{i-1/2}}^{x_{i+1/2}} \frac{\partial\textbf{(U)}}{\partial x} \ dx =  \mathcal{F}_{i-1/2} ^{n+1} - \mathcal{F}_{i+1/2} ^{n} $$
 
-Avec $F_{i+1/2} ^n$ dépendant de $U_i ^n$ et $U_{i+1} ^n$.
+Avec $\mathcal{F}_{i+1/2} ^n$ dépendant de $U_i ^n$ et $U_{i+1} ^n$.
 On a finalement :
 
-$$ \frac{ U_i ^{n+1} - U_i ^{n}}{\Delta t} + \frac{ F_{i-1/2} ^{n+1} - F_{i+1/2} ^{n} }{\Delta x} = 0 $$
+$$ \frac{ U_i ^{n+1} - U_i ^{n}}{\Delta t} + \frac{ \mathcal{F}_{i-1/2} ^{n+1} - \mathcal{F}_{i+1/2} ^{n} }{\Delta x} = 0 $$
 
-Toute la question est donc de savoir comment approcher le flux numérique $F_{i-1/2} ^{n+1}$ en fonction de $U_i ^n$ et $U_{i+1} ^n$. On se sert pour cela du théorème de Lax, qui stipule que la stabilité d'un schéma numérique consistant assure la convergence. La consistance est la notion décrivant à quel point le schéma numérique approche précisément l'équation de départ, tandis que la stabilité décrit la non-amplification de cette erreur d'approximation.
+Toute la question est donc de savoir comment approcher le flux numérique $\mathcal{F}_{i-1/2} ^{n}$ en fonction de $U_i ^n$ et $U_{i+1} ^n$. On se sert pour cela du théorème de Lax, qui stipule que la stabilité d'un schéma numérique consistant assure la convergence. La consistance est la notion décrivant à quel point le schéma numérique approche précisément l'équation de départ, tandis que la stabilité décrit la non-amplification de cette erreur d'approximation.
+
+\subsubsection{Approche naïve : Flux centré }
+
+On pourrait d'abord penser à approcher le flux $\mathcal{F}_{i-1/2} ^{n}$ par la moyenne entre $x_{i-1/2}$ et $x_{i+1/2}$ :
+
+$$ \mathcal{F}_{i-1/2} = \frac{F(U_{i-1}) + F(U_{i+1})}{2} $$
+
+Et ainsi :
+
+$$ U_i ^{n+1} = U_i ^{n}  - \frac{\Delta t}{2 \Delta x} (F(U_{i+1} ^{n} - F(U_{i-1} ^{n} ) $$
+
+Malheureusement, ce flux est instable comme le prouvent ces simulations de rupture de barrage :
+
+$$ Insérer \quad Image \quad Barrage $$
+
+Les oscillations du débit Q est amplifié au cours du temps. ( Peut être essayer une autre simulation histoire de pas reprendre toutes celles du bouquin )
+
+\subsubsection{Flux de Lax-Friedrichs}
+
+Essayons maintenant avec un terme supplémentaire :
+
+$$ \mathcal{F}_{i-1/2} = \frac{F(U_{i-1}) + F(U_{i+1})}{2} - \alpha \frac{U_i - U_{i-1}}{2} \quad avec \quad \alpha = \frac{\Delta x}{\Delta t}$$
+
+On a donc la formule suivante pour calculer $U_i ^{n+1}$:
+
+$$ U_i ^{n+1} = U_i ^{n}  - \frac{\Delta t}{\Delta x} ( \frac{F(U_{i-1}) + F(U_{i+1})}{2} - \alpha \frac{U_i - U_{i-1}}{2} - \frac{F(U_{i+1}) + F(U_i)}{2} + \alpha \frac{U_{i+1} - U_i}{2} ) $$
+
+En simplifiant, car $ \alpha \frac{\Delta t}{\Delta x} = 1 $, on trouve que :
+
+$$ U_i ^{n+1} = \frac{U_{i+1} ^{n} + U_i ^{n}}{2}  - \frac{\Delta t}{2 \Delta x} ( F(U_{i+1} ^n ) - F(U_{i-1} ^n ) $$
+
+On verra dans la section suivante que l'on peut choisir $\alpha$ plus finement et ayant les bonnes propriétés en fonction des valeurs propres du système étudié.
+
+\subsubsection{Flux de Rusanov}
+
 
 
 \subsection{Validation de l'implémentation avec des tests}
