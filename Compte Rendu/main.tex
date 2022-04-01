@@ -956,7 +956,7 @@ Dans ce contexte, on peut appliquer le schéma dit de Rusanov, auquel est associ
 
 Divisons tout d'abord notre espace et notre temps avec les pas $\Delta x$ et $\Delta t$, respectivement. On cherche à discrétiser l'équation : 
 
-$$\frac{\partial\textbf{U}}{\partial t}+\frac{\partial}{\partial x}(\textbf{F} (\textbf{U})) = 0 \quad \textbf{Équation sans terme source} \label{EqRusanov} $$
+$$\frac{\partial\textbf{U}}{\partial t}+\frac{\partial}{\partial x}(\textbf{F} (\textbf{U})) = 0 \quad \textbf{Équation sans terme source} \label{EqRusanov} .$$
 
 On pose ainsi $U_i ^n$ l'approximation de $U$ autour de la position $x_i$ à l'étape $t^n$. On peut donc noter :
 
@@ -964,16 +964,15 @@ $$ U_i ^n = \frac{1}{\Delta x}\int_{x_{i-1/2}}^{x_{i+1/2}} U(x,t^n) \ dx $$
 
 En intégrant le premier terme de \ref{EqRusanov} entre $x_{i-1/2}$ et $x_{i+1/2}$, on a grâce à un développement de Taylor :
 
-$$ \int_{x_{i-1/2}}^{x_{i+1/2}} \frac{\partial\textbf{U}}{\partial t} \ dx = \int_{x_{i-1/2}}^{x_{i+1/2}} \frac{U(x,t^{n+1}) - U(x,t^{n})}{\Delta t} \ dx = \Delta x \frac{ U_i ^{n+1} - U_i ^{n}}{\Delta t} $$
+$$ \int_{x_{i-1/2}}^{x_{i+1/2}} \frac{\partial\textbf{U}}{\partial t} \ dx = \int_{x_{i-1/2}}^{x_{i+1/2}} \frac{U(x,t^{n+1}) - U(x,t^{n})}{\Delta t} \ dx = \Delta x \frac{ U_i ^{n+1} - U_i ^{n}}{\Delta t} .$$
 
-De même avec le second terme de \ref{EqRusanov} : 
+Et en intégrant le second terme de \ref{EqRusanov} : 
 
-$$ \int_{x_{i-1/2}}^{x_{i+1/2}} \frac{\partial\textbf{(U)}}{\partial x} \ dx =  \mathcal{F}_{i-1/2} ^{n+1} - \mathcal{F}_{i+1/2} ^{n} $$
+$$ \int_{x_{i-1/2}}^{x_{i+1/2}} \frac{\partial\textbf{F(U)}}{\partial x} \ dx = F(U(x_{i+1/2})) - F(U(x_{i-1/2} )) = \mathcal{F}_{i+1/2} - \mathcal{F}_{i-1/2}.$$
 
-Avec $\mathcal{F}_{i+1/2} ^n$ dépendant de $U_i ^n$ et $U_{i+1} ^n$.
-On a finalement :
+On peut faire l'hypothèse que le flux de U passant en $x_{i+1/2}$, soit $\mathcal{F}_{i+1/2}$, dépend uniquement de $U_i$ et $U_{i+1}$. On a finalement :
 
-$$ \frac{ U_i ^{n+1} - U_i ^{n}}{\Delta t} + \frac{ \mathcal{F}_{i-1/2} ^{n+1} - \mathcal{F}_{i+1/2} ^{n} }{\Delta x} = 0 $$
+$$ \frac{ U_i ^{n+1} - U_i ^{n}}{\Delta t} + \frac{ \mathcal{F}_{i+1/2} ^{n+1} - \mathcal{F}_{i-1/2} ^{n} }{\Delta x} = 0.$$
 
 Toute la question est donc de savoir comment approcher le flux numérique $\mathcal{F}_{i-1/2} ^{n}$ en fonction de $U_i ^n$ et $U_{i+1} ^n$. On se sert pour cela du théorème de Lax, qui stipule que la stabilité d'un schéma numérique consistant assure la convergence. La consistance est la notion décrivant à quel point le schéma numérique approche précisément l'équation de départ, tandis que la stabilité décrit la non-amplification de cette erreur d'approximation.
 
