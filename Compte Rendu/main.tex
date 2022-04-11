@@ -455,6 +455,8 @@ headsepline, % Uncomment to get a line under the header
 \usepackage[T1]{fontenc}
 \usepackage{cases}
 
+\theoremstyle{definition}
+\newtheorem{definition}{Définition}
 
 \begin{document}
 
@@ -503,6 +505,10 @@ headsepline, % Uncomment to get a line under the header
 
 \newpage
 
+Les équations de Saint-Venant modélisent le comportement d'un écoulement en eau peu profonde, comme un canal ou un bord de plage.
+Ces équations, introduites à la fin des années 1880, sont extrêmement bien adaptées à modélisation et à la simulation numérique de phénomènes 
+catastrophiques, comme les inondations ou les tsunamis.
+
 \section{Description et dérivation des équations}
 
 Ici, il s'agit  d'énoncer les équations, de décrire les différentes quantités en jeu ($h$, $u$, $q$ et $Z$)
@@ -515,7 +521,7 @@ Le système de Saint-Venant avec terme source (qui est aussi désigné par le no
 \begin{equation} \frac{\partial h}{\partial t}(t,x)+\frac{\partial q}{\partial x}(t,x)=0 \label{sveq1} \end{equation}
 \begin{equation} \frac{\partial q}{\partial t}(t,x)+\frac{\partial}{\partial x}(\frac{q^{2}(t,x)}{h(t,x)}+g\frac{h^{2}(t,x)}{2})=-gh(t,x)\frac{\partial Z}{\partial x}(x) \label{sveq2} \end{equation}
 
-Celui-ci permet de décrire un écoulement d'eau unidirectionnel où $h(t,x)>0$ représente la hauteur d'eau, $u(t,x)$ désigne la vitesse du fluide, $q(t,x)=h(t,x)u(t,x)$ le débit du fluide et $Z(x)$ la topographie canal ; $t\geq0$ étant le temps, $x\in\mathbb{R}$ la position spatiale dans le cours d'eau et $g$ la constante de gravitation.
+Celui-ci permet de décrire un écoulement d'eau unidirectionnel où $h(t,x)>0$ représente la hauteur d'eau, $u(t,x)$ désigne la vitesse du fluide, $q(t,x)=h(t,x)u(t,x)$ le débit du fluide et $Z(x)$ la topographie du canal ; $t\geq0$ étant le temps, $x\in\mathbb{R}$ la position spatiale dans le cours d'eau et $g$ la constante de gravitation.
 
 Dans ce système, $Z$ ne dépend pas du temps $t$. On
 fait ainsi l'hypothèse que le fond ne s'érode pas au cours du temps ; ce qui parait raisonnable dans de nombreuses situations (un fond rocheux sur une courte durée, par exemple).
@@ -531,37 +537,71 @@ F'(x)=f(x, b(x))b'(x)-f(x,a(x))a'(x)+\int_{a(x)}^{b(x)}{\partial f\over \partial
 \end{equation}
 \end{prop}
 
-Nous noterons par la suite $$\textbf{V}=\begin{bmatrix}u\\ v \\ w \end{bmatrix}$$ le vecteur dont les composantes sont les vitesses $u, v$ et $w$ dans les directions $(Ox), (Oy)$ et $(Oz)$ respectivement.
+\subsubsection{Les équations d'Euler}
 
-\
+Dans ce paragraphe, nous allons d'abord parler des équations d'Euler. Ce sont des équations qui forment un système hyperbolique non-linéaire. Les équations expriment des lois de conservation qui gouvernent la dynamique des fluides. C'est à partir de ces équations, et moyennant certaines hypothèses, que nous allons dériver les équations de Saint-Venant. Notons $\rho(x,y,z,t)$ la masse volumique du fluide, $p(x,y,z,t)$ la pression, $u(x,y,z,t)$ la composante selon l'axe $(Ox)$ de la vitesse, $v(x,y,z,t)$ sa composante selon l'axe $(Oy)$ et $w(x,y,z,t)$ sa composante selon l'axe $(Oz)$. Nous noterons alors par la suite $\textbf{V}=(u,v,w )$ le vecteur vitesse dont les composantes sont les vitesses $u, v$ et $w$. 
 
-Nous allons maintenant dériver la deuxième équation du système. Il s'agit de l'\textbf{équation du moment}. Ecrivons la composante selon $(Ox)$ de l'équation d'Euler : 
+Les trois équations d'Euler sont les suivantes :
+
+%\begin{equation} \rho_{t} + (\rho u)_{x}+(\rho v)_{y}+(\rho w)_{z} =0, \label{Euler0} \end{equation}
+
+\begin{equation} (\rho u)_{t} + (\rho u^{2}+p)_{x}+(\rho uv)_{y}+(\rho uw)_{z} =0, \label{Euler1} \end{equation}
+
+\begin{equation} (\rho v)_{t} + (\rho uv)_{x}+(\rho v^{2}+p)_{y}+(\rho vw)_{z} =0,\label{Euler2}\end{equation}
+
+\begin{equation} (\rho w)_{t} + (\rho u w)_{x}+(\rho vw)_{y}+(\rho w^{2}+p)_{z} =0.\label{Euler3}\end{equation}
+
+L'équation \eqref{Euler1} est celle qui va nous servir à dériver la deuxième équation de Saint-Venant énoncée. A ces 3 équations, on associe aussi parfois l'équation 
+
+\begin{equation} \rho_{t}+\text{div}(\rho\textbf{V})=\rho_{t} + (\rho u)_{x}+(\rho v)_{y}+(\rho w)_{z} =0, \label{Euler0} \end{equation}
+
+loi de conservation qui va nous servir pour dériver la première équation du système.
+
+\subsubsection{Dérivation du système de Saint-Venant}
+
+\begin{definition}
+Soit $\textbf{V}=(u,v,w)$ la vitesse définie comme avant. Soit $f$ une fonction qui dépend de $t,x,y$ et $z$.
+On définit (et on note) la dérivée particulaire de f par 
+$\frac{Df}{Dt} = \frac{\partial f}{\partial t}+u\frac{\partial f}{\partial x}+v\frac{\partial f}{\partial y}+w\frac{\partial f}{\partial z}.$
+\end{definition}
+
+
+Voici les hypothèses nécessaires à la dérivation des équations de Saint-Venant :
+
+\begin{itemize}
+\item $\textbf{(H1)}$ : Le fluide est incompressible,
+\item $\textbf{(H2)}$ : $h$, $u$ et $v$ sont invariantes selon l'axe $(Oy)$ (puisqu'il s'agit d'étudier un canal, on ramène l'étude au plan $(y=0)$ en négligeant les variations selon la largeur du canal),
+\item $\textbf{(H3)}$  : La vitesse $u$ est constante selon l'axe $(Oz)$,
+\item $\textbf{(H4)}$ : la topographie $Z$ est constante au cours du temps.
+\end{itemize}
+
+Nous utiliserons aussi les conditions de passage suivantes :
+
+\begin{itemize}
+\item $\textbf{(H5)}$ : $\frac{D}{Dt} (Z+h-z) = 0 \quad \text{en z = Z+h}$,
+\item $\textbf{(H6)}$ : $\frac{D}{Dt} (Z-z) = 0 \quad \text{en z = Z}$.
+\end{itemize}
+
+La première condition $\textbf{(H5)}$ traduit l'hypothèse que la composante normale de la vitesse à la surface est nulle, autrement dit qu'il n'y a pas de flux entrant par la surface de l'eau. La deuxième $\textbf{(H6)}$ traduit le même phénomène mais au niveau du fond de l'eau.
+
+D'après $\textbf{(H1)}$, on peut sortir $\rho$ des dérivées. Alors \eqref{Euler1} se réécrit en 
+%\begin{equation} \text{div}(\textbf{V})=u_{x}+v_{y}+w_{z} =0, \label{eq:Romain}\end{equation}
+\begin{equation} u_{t} + (u^{2})_{x}+(uv)_{y}+(uw)_{z} =-\frac{1}{\rho}p_{x}. \label{dvpt2}\end{equation}
+En supposant  $\textbf{(H2)}$ on a que les quantités $h$ et $u$ sont invariantes selon l'axe $(Oy)$. Dans ces conditions, le terme $(uv)_{y}$ est nul et on obtient :
+
+%\begin{equation}
+%\frac{\partial u}{\partial t}+u\frac{\partial u}{\partial x}+w\frac{\partial u}{\partial z}=-\frac{1}{\rho}\frac{\partial p}{\partial x}.
+%\end{equation}
+
+%En multipliant \eqref{eq:Romain} par $u$,
+%on arrive à  $u\frac{\partial u}{\partial x}+u\frac{\partial v}{\partial y}+u\frac{\partial w}{\partial z}=0$. D'où en sommant avec \eqref{EqEulerX} :
+
+%\begin{equation}
+%\frac{\partial u}{\partial t}+\frac{\partial}{\partial x} (u^{2})+\frac{\partial}{\partial y}(uv)+\frac{\partial }{\partial z}(uw)=-\frac{1}{\rho}\frac{\partial p}{\partial x}.
+%\end{equation}
 
 \begin{equation}
-\frac{Du}{Dt} = \frac{\partial u}{\partial t}+u\frac{\partial u}{\partial x}+v\frac{\partial u}{\partial y}+w\frac{\partial u}{\partial z}=-\frac{1}{\rho}\frac{\partial P}{\partial x}. \label{EqEulerX}
-\end{equation}
-
-On fait l'hypothèse que les quantités $h$ et $u$ sont invariantes selon l'axe $(Oy)$. Ainsi, l'étude se ramène au plan $(Oxz)$. Dans ces conditions, le terme $\frac{\partial u}{\partial y}$ est nul et on obtient :
-
-\begin{equation}
-\frac{\partial u}{\partial t}+u\frac{\partial u}{\partial x}+w\frac{\partial u}{\partial z}=-\frac{1}{\rho}\frac{\partial P}{\partial x}.
-\end{equation}
-
-La loi de conservation de la masse pour un fluide incompressible est
-\begin{equation}
-\text{div}(\textbf{V})=\frac{\partial u}{\partial x}+\frac{\partial v}{\partial y}+\frac{\partial w}{\partial z}=0. \label{eq:Romain}
-\end{equation}
-
-En multipliant par $u$ cette équation,
-on arrive à  $u\frac{\partial u}{\partial x}+u\frac{\partial v}{\partial y}+u\frac{\partial w}{\partial z}=0$. D'où en sommant avec \eqref{EqEulerX} :
-
-\begin{equation}
-\frac{\partial u}{\partial t}+\frac{\partial}{\partial x} (u^{2})+\frac{\partial}{\partial y}(uv)+\frac{\partial }{\partial z}(uw)=-\frac{1}{\rho}\frac{\partial P}{\partial x}.
-\end{equation}
-
-De nouveau, l'hypothèse d'invariance selon $(Oy)$ permet de dire que $\frac{\partial}{\partial y}(uv)=0$ et on arrive à :
-\begin{equation}
-\frac{\partial u}{\partial t}+\frac{\partial}{\partial x} (u^{2})+\frac{\partial }{\partial z}(uw)=-\frac{1}{\rho}\frac{\partial P}{\partial x}.
+\frac{\partial u}{\partial t}+\frac{\partial}{\partial x} (u^{2})+\frac{\partial }{\partial z}(uw)=-\frac{1}{\rho}\frac{\partial p}{\partial x}.
 \end{equation}
 
 Maintenant, on intègre entre $z=Z$ et $z=Z+h$ :
@@ -570,33 +610,31 @@ Maintenant, on intègre entre $z=Z$ et $z=Z+h$ :
 \int_{Z}^{Z+h}\left[\frac{\partial u}{\partial t}+\frac{\partial }{\partial x}(u^{2})\right]~\mathrm dz+\left[uw\right]_{Z}^{Z+h}=-\frac{1}{\rho}\int_{Z}^{Z+h}\frac{\partial P}{\partial x}~\mathrm dz. \label{EqInt}
 \end{equation}
 
+Le terme $\left[uw\right]_{Z}^{Z+h}$ disparaît étant donné que la vitesse verticale $w$ est nulle à la surface libre et au fond.
+
 Avec la règle de Leibniz, on a d'une part :
 
 \begin{equation}
 \begin{split}
-& \frac{\partial}{\partial t}\int_{Z}^{Z+h}u ~\mathrm dz = \int_{Z}^{Z+h}\frac{\partial u}{\partial t} ~\mathrm dz +u\vert_{z=Z+h}\frac{\partial}{\partial t}(Z+h)-u\vert_{z=Z}\frac{\partial Z}{\partial t} \\
-& = \int_{Z}^{Z+h}\frac{\partial u}{\partial t} ~\mathrm dz +u\vert_{z=Z+h}\frac{\partial h}{\partial t} \\
+ \frac{\partial}{\partial t}\int_{Z}^{Z+h}u ~\mathrm dz & = \int_{Z}^{Z+h}\frac{\partial u}{\partial t} ~\mathrm dz +u(z=Z+h)\frac{\partial}{\partial t}(Z+h)-u(z=Z)\frac{\partial Z}{\partial t} \\
+& = \int_{Z}^{Z+h}\frac{\partial u}{\partial t} ~\mathrm dz +u(z=Z+h)\frac{\partial h}{\partial t} ,\label{dvpt1}\\
 \end{split}
 \end{equation}
 
-la suppression du terme $\frac{\partial Z}{\partial t}$ venant du fait que la topographie est supposée constante au cours du temps.
-
-\
+la suppression du terme $\frac{\partial Z}{\partial t}$ venant de l'hypothèse \textbf{(H4)} selon laquelle le fond $Z$ est constant au cours du temps.
 
 Et d'autre part on a :
 
 \begin{equation}
-\frac{\partial}{\partial x}\int_{Z}^{Z+h}u^{2} ~\mathrm dz = \int_{Z}^{Z+h}\frac{\partial }{\partial x}(u^{2}) ~\mathrm dz +u^{2}\vert_{z=Z+h}\frac{\partial}{\partial x}(Z+h)-u^{2}\vert_{z=Z}\frac{\partial Z}{\partial x} 
+\frac{\partial}{\partial x}\int_{Z}^{Z+h}u^{2} ~\mathrm dz = \int_{Z}^{Z+h}\frac{\partial }{\partial x}(u^{2}) ~\mathrm dz +u^{2}(z=Z+h)\frac{\partial}{\partial x}(Z+h)-u^{2}(z=Z)\frac{\partial Z}{\partial x}. \label{dvpt2}
 \end{equation}
 
-\
-
-Donc en injectant dans \eqref{EqInt} on obtient :
+Donc en injectant \eqref{dvpt1} et \eqref{dvpt2} dans \eqref{EqInt} on obtient :
 
 \begin{equation}
 \begin{split}
-& \frac{\partial}{\partial t}\left[\int_{Z}^{Z+h}u ~\mathrm dz\right] -u\vert_{z=Z+h}\frac{\partial h}{\partial t} + \frac{\partial}{\partial x}\left[\int_{Z}^{Z+h} u^{2} ~\mathrm dz\right]-u^{2}\vert_{z=Z+h}\frac{\partial}{\partial x}(Z+h) \\
-& +u^{2}\vert_{z=Z}\frac{\partial Z}{\partial x}+u\vert_{z=Z+h}w\vert_{z=Z+h}-u\vert_{z=Z}w\vert_{z=Z}= -\frac{1}{\rho}\int_{Z}^{Z+h}\frac{\partial P}{\partial x} ~\mathrm dz \\
+& \frac{\partial}{\partial t}\left[\int_{Z}^{Z+h}u ~\mathrm dz\right] -u(z=Z+h)\frac{\partial h}{\partial t} + \frac{\partial}{\partial x}\left[\int_{Z}^{Z+h} u^{2} ~\mathrm dz\right]-u^{2}(z=Z+h)\frac{\partial}{\partial x}(Z+h) \\
+& +u^{2}(z=Z)\frac{\partial Z}{\partial x}= -\frac{1}{\rho}\int_{Z}^{Z+h}\frac{\partial p}{\partial x} ~\mathrm dz.
 \end{split}
 \end{equation}
 
@@ -604,84 +642,65 @@ Donc en injectant dans \eqref{EqInt} on obtient :
 Si l'on suppose que la vitesse $u$ est constante selon l'axe $(Oz)$, on a que $\int_{Z}^{Z+h}u ~\mathrm dz = uh$ et $\int_{Z}^{Z+h}u^{2} ~\mathrm dz = u^{2}h$, et donc :
 
 \begin{equation}
+ \frac{\partial}{\partial t}(uh)+ \frac{\partial}{\partial x}(u^{2}h)-u(z=Z+h)(\frac{\partial h}{\partial t}+u(z=Z+h)\frac{\partial}{\partial x}(Z+h)) \\
+ =-\frac{1}{\rho}\int_{Z}^{Z+h}\frac{\partial p}{\partial t} ~\mathrm dz. \label{name}
+\end{equation}
+
+Une simplification s'effectue grâce à $\textbf{(H5)}$.  $\frac{D}{Dt} (Z+h-z) = 0$ en z = Z+h équivaut à $\frac{\partial h}{\partial t}+u\frac{\partial Z}{\partial x}+u\frac{\partial h}{\partial x}=0$ en z = Z+h (en utilisant les invariances et le fait que la vitesse verticale $w$ est nulle à la surface libre). Et donc : $$\frac{\partial h}{\partial t}+u(z=Z+h)\frac{\partial}{\partial x}(Z+h)=0.$$
+
+L'équation \ref{name} se réduit alors en
+
+\begin{equation}
+ \frac{\partial q}{\partial t}+ \frac{\partial}{\partial x}(hu^{2})=-\frac{1}{\rho}\int_{Z}^{Z+h}\frac{\partial p}{\partial x} ~\mathrm dz. \label{brice2}
+ \end{equation}
+
+Encore une fois avec la règle de Leibniz et utilisant la formule d'équilibre hydrostatique:
+$$ \frac{\partial }{\partial x}\int_{Z}^{Z+h}p ~\mathrm dz =\int_{Z}^{Z+h}\frac{\partial p}{\partial x}~\mathrm dz + p(Z+h)\frac{\partial}{\partial x}(Z+h)-p(Z)\frac{\partial Z}{\partial x} = \int_{Z}^{Z+h}\frac{\partial p}{\partial x} ~\mathrm dz-\rho g h\frac{\partial Z}{\partial x},$$ 
+
+la pression étant considérée égale à $0$ à la surface de l'eau. En utilisant encore cette formule on a :
+
+\begin{equation}
 \begin{split}
-& \frac{\partial}{\partial t}(uh)+ \frac{\partial}{\partial x}(u^{2}h)-u\vert_{z=Z+h}(\frac{\partial h}{\partial t}+u\vert_{z=Z+h}\frac{\partial}{\partial x}(Z+h)-w\vert_{z=Z+h}) \\
-& =-\frac{1}{\rho}\int_{Z}^{Z+h}\frac{\partial u}{\partial t} ~\mathrm dz \\ \label{name}
+\int_{Z}^{Z+h}\frac{\partial p}{\partial x} ~\mathrm dz&=\frac{\partial}{\partial x} (\rho gh\times h) + \rho gh\frac{\partial Z}{\partial x}\\ \label{brice3}
+&=\rho(g\frac{\partial}{\partial x}(h^{2})+gh\frac{\partial Z}{\partial x}).
 \end{split}
 \end{equation}
 
-Or comme $\frac{\partial h}{\partial t}+u\vert_{z=Z+h}\frac{\partial}{\partial x}(Z+h)=w\vert_{z=Z+h}$, l'équation \ref{name} se réduit en
+Et en combinant \ref{brice2} et \ref{brice3} on arrive à la deuxième équation de Saint-Venant en rempla\c cant le second membre :
 
 \begin{equation}
- \frac{\partial q}{\partial t}+ \frac{\partial}{\partial x}(hu^{2})=-\frac{1}{\rho}\int_{Z}^{Z+h}\frac{\partial P}{\partial x} ~\mathrm dz \label{brice2}
- \end{equation}
-
-Encore une fois avec la règle de Leibniz 
-$$\int_{Z}^{Z+h}\frac{\partial P}{\partial x} ~\mathrm dz =\frac{\partial }{\partial x}\int_{Z}^{Z+h}P ~\mathrm dz + P(Z+h)\frac{\partial}{\partial x}(Z+h)-P(Z)\frac{\partial Z}{\partial x} = \frac{\partial }{\partial x}\int_{Z}^{Z+h}P ~\mathrm dz-\rho g h\frac{\partial Z}{\partial x}.$$ 
-
-En utilisant la formule d'équilibre hydrostatique : 
-\begin{equation}
-\frac{\partial}{\partial x}\int_{Z}^{Z+h}P ~\mathrm dz=\frac{\partial}{\partial x} \int_{Z}^{Z+h}\rho g(Z+h-z) ~\mathrm dz = \frac{\partial}{\partial x}(\rho g h^{2}/2) \label{brice3}
-\end{equation}
-
-Et en combinant \ref{brice2} et \ref{brice3} on arrive à la deuxième équation en rempla\c cant :
-
-\begin{equation}
-\frac{\partial q}{\partial t}+\frac{\partial}{\partial x}(\frac{q^{2}}{h}+g\frac{h^{2}}{2})=g h\frac{\partial Z}{\partial x} \label{EqSaintVenant2}
+\frac{\partial q}{\partial t}+\frac{\partial}{\partial x}(\frac{q^{2}}{h}+g\frac{h^{2}}{2})=-g h\frac{\partial Z}{\partial x}. \label{EqSaintVenant2}
 \end{equation}
 
 %Partie Romain%
 
-Pour obtenir la première équation, repartons de \ref{eq:Romain} et intégrons entre $z=Z$ et $z=Z+h$ :
+Pour obtenir la première équation, partons de \ref{Euler0} et intégrons entre $z=Z$ et $z=Z+h$ :
 
 \begin{equation}
-\int_{Z}^{Z+h} (u_x + v_y) \ dz + w\vert_{z=Z+h}-w\vert_{z=Z} = 0 
+\int_{Z}^{Z+h} (u_x + v_y) \ dz + w\vert_{z=Z+h}-w\vert_{z=Z} = 0.
 \label{EqRomain1}
 \end{equation}
 
-Pour résoudre cette équation, il est nécessaire de poser ces conditions au bord :
+Les conditions $(\textbf{H5})$ et  $(\textbf{H6})$ donnent :
 
 \begin{align}
-\frac{D}{Dt} (Z+h-z) = 0 \quad \text{en z = Z+h} \label{BordHaut}\\
-\frac{D}{Dt} (Z-z) = 0 \quad \text{en z = Z} \label{BordBas}
+[ \frac{\partial (Z+h)}{\partial t} + u.\frac{\partial (Z+h)}{\partial x} + v.\frac{\partial (Z+h)}{\partial y} - w ] \vert _{z=Z+h} = 0 \label{BordHautDvpt}, \\
+[ u.Z_x + v.Z_y + w ] \vert _{z=Z} = 0. \label{BordBasDvpt}
 \end{align}
 
-La première condition au bord traduit l'hypothèse que la composante normale de la vitesse à la surface est nulle, autrement dit qu'il n'y a pas de flux entrant par la surface de l'eau.
-
-\medskip
-
-La deuxième condition au bord traduit le même phénomène mais au niveau du fond de l'eau.
-
-\bigskip
-
-On peut remplacer ces deux dérivées droites en temps grâce à \ref{EqEulerX} :
-
-\begin{align}
-[ \frac{\partial (Z+h)}{\partial t} + u.\frac{\partial (Z+h)}{\partial x} + v.\frac{\partial (Z+h)}{\partial y} - w ] \vert _{z=Z+h} = 0 \label{BordHautDvpt} \\
-[ u.Z_x + v.Z_y + w ] \vert _{z=Z} = 0 \label{BordBasDvpt}
-\end{align}
-
-Et grâce à cette relation :
+Et grâce à la formule de Leibniz, en réinsérant \ref{BordHautDvpt} et \ref{BordBasDvpt} dans \ref{EqRomain1}, on a finalement : 
 
 \begin{equation}
-\frac{\partial}{\partial x} \int_{a(x,y)}^{b(x,y)} u \ dz = \int_{a(x,y)}^{b(x,y)} \frac{\partial u}{\partial x} \ dz + u(b(x,y)).\frac{\partial b}{\partial x} + u(a(x,y)).\frac{\partial a}{\partial x}
-\end{equation}
-
-En réinsérant \ref{BordHautDvpt} et \ref{BordBasDvpt} dans \ref{EqRomain1}, on a finalement : 
-
-\begin{equation}
-\frac{\partial (Z+h)}{\partial t} + \frac{\partial}{\partial x} \int_{Z}^{Z+h} u \ dz +  \frac{\partial}{\partial y} \int_{Z}^{Z+h} v \ dz
+\frac{\partial (Z+h)}{\partial t} + \frac{\partial}{\partial x} \int_{Z}^{Z+h} u \ dz +  \frac{\partial}{\partial y} \int_{Z}^{Z+h} v \ dz.
 \end{equation}
 
 Nous pouvons davantage simplifier cette équation en observant que u et v sont indépendants de z, ainsi que Z indépendant du temps. Cette équation devient donc :
 
 \begin{equation}
-\frac{\partial h}{\partial t} + \frac{\partial}{\partial x} (u . h ) + \frac{\partial}{\partial y} (v . h )=0 \label{EqSaintVenant1}
+\frac{\partial h}{\partial t} + \frac{\partial}{\partial x} (u . h ) + \frac{\partial}{\partial y} (v . h )=0,\label{EqSaintVenant1}
 \end{equation}
 
-Soit la première équation de Saint Venant.
-
-\bigskip
+soit la première équation de Saint Venant.
 
 Les deux équations \ref{EqSaintVenant1} et \ref{EqSaintVenant2} forment un système d'équations aux dérivées partielles d'inconnues $h$ et $q$ (ou $h$ et $u$). Etant données des conditions de bord et des conditions initiales, on doit pouvoir justifier qu'il existe une unique solution que l'on peut calculer numériquement à l'aide d'un schéma de type éléments finis.
 
@@ -974,13 +993,13 @@ On peut faire l'hypothèse que le flux de U passant en $x_{i+1/2}$, soit $\mathc
 
 $$ \frac{ U_i ^{n+1} - U_i ^{n}}{\Delta t} + \frac{ \mathcal{F}_{i+1/2} ^n - \mathcal{F}_{i-1/2} ^{n} }{\Delta x} = 0.$$
 
-Toute la question est donc de savoir comment approcher le flux numérique $\mathcal{F}_{i+1/2} ^{n}$ en fonction de $U_i ^n$ et $U_{i+1} ^n$. On notera par la suite que $\mathcal{F}_{i+1/2} ^{n} = f(U_i ^n , U_{i+1} ^n)$
+Toute la question est donc de savoir comment approcher le flux numérique $\mathcal{F}_{i-1/2} ^{n}$ en fonction de $U_i ^n$ et $U_{i+1} ^n$.
 
 \subsubsection{Approche naïve : Flux centré }
 
-On pourrait d'abord penser à approcher le flux $\mathcal{F}_{i+1/2} ^{n}$ par la moyenne entre $x_i$ et $x_{i+1}$ :
+On pourrait d'abord penser à approcher le flux $\mathcal{F}_{i-1/2} ^{n}$ par la moyenne entre $x_{i-1/2}$ et $x_{i+1/2}$ :
 
-$$ \mathcal{F}_{i+1/2} = \frac{F(U_i) + F(U_{i+1})}{2} $$
+$$ \mathcal{F}_{i-1/2} = \frac{F(U_{i-1}) + F(U_{i+1})}{2} $$
 
 Et ainsi :
 
@@ -996,7 +1015,7 @@ Les oscillations du débit Q est amplifié au cours du temps. ( Peut être essay
 
 Essayons maintenant avec un terme supplémentaire :
 
-$$ \mathcal{F}_{i+1/2} = \frac{F(U_i) + F(U_{i+1})}{2} - \alpha \frac{U_{i+1} - U_i}{2} \quad avec \quad \alpha = \frac{\Delta x}{\Delta t}$$
+$$ \mathcal{F}_{i-1/2} = \frac{F(U_{i-1}) + F(U_{i+1})}{2} - \alpha \frac{U_i - U_{i-1}}{2} \quad avec \quad \alpha = \frac{\Delta x}{\Delta t}$$
 
 On a donc la formule suivante pour calculer $U_i ^{n+1}$:
 
@@ -1010,23 +1029,6 @@ On verra dans la section suivante que l'on peut choisir $\alpha$ plus finement e
 
 \subsubsection{Flux de Rusanov}
 
-Revenons tout d'abord aux critères de choix d'un flux numérique. Deux conditions sont importantes : la consistance et la stabilité.
-
-\textbf{Définition :} On dit que le schéma est consistant avec le système étudié si :
-
-$$ f(U,U) = U \quad \forall U $$ 
-
-\textbf{Définition :} On dit que le schéma est stable s'il préserve un domaine convexe invariant noté C, autrement dit, que les erreurs ne soient pas amplifiées :
-
-$$ U_i ^n \in C \Rightarrow U_i ^{n+1} \in C  $$
-
-En choisissant une valeur d'$\alpha$ bien posée dans le flux de Lax-Friedrichs, on obtient le flux de Rusanov :
-
-$$ \mathcal{F}_{i+1/2} = \frac{F(U_i) + F(U_{i+1})}{2} - \alpha \frac{U_{i+1} - U_i}{2} $$
-
-avec $ \alpha = \underset{U = U_i , U_{i+1}}{\sup} \underset{j = 1 , 2}{\sup} | \lambda_j(U) | $
-
-Ce flux numérique vérifie bien les conditions de consistance et de stabilité.
 
 
 \subsection{Validation de l'implémentation avec des tests}
@@ -1043,8 +1045,8 @@ Voyons d'abord un premier test trivial : en prenant une hauteur d'eau plate et u
 On vérifie 	alors avec les plots de la figure... que le schéma fonctionne bien sur cet exemple.
 
 \begin{figure}
-\includegraphics[scale = .6]{"plat0"}
-\includegraphics[scale = .6]{"plat10"} 
+\includegraphics[scale = .6]{plat0}
+\includegraphics[scale = .6]{plat10} 
 \caption{Un premier test : évolution d'une hauteur d'eau plate}
 \end{figure}
 
@@ -1061,8 +1063,8 @@ Intuitivement, on s'attend à ce que la \og goutte \fg{} tombe et forme deux vag
 C'est aussi ce que nous dit la référence \cite{RL} à la page 257. Et effectivement, voici ce que l'on observe (après environ 3 secondes et 8 secondes) :
 
 \begin{figure}
-\includegraphics[scale = .6]{"bosse4.png"}
-\includegraphics[scale = .6]{"bosse10.png"} 
+\includegraphics[scale = .6]{bosse4.png}
+\includegraphics[scale = .6]{bosse10.png} 
 \caption{Un deuxième test : une goutte d'eau}
 \end{figure}
 
@@ -1072,15 +1074,15 @@ Regardons maintenant un dernier test classique dans la littérature : la rupture
 
 \begin{figure}
 \centering
-\includegraphics[scale = .7]{"barrage0"}
+\includegraphics[scale = .7]{barrage0}
 \end{figure}
 
 L'eau forme une courbe en escalier (d'une seule marche) comme si elle était contenue dans une digue. On observe son évolution comme si la digue disparaissait juste après l'instant initial ; d'où le nom de
 rupture de barrage. On observe le résultat suivant :
 
 \begin{figure}
-\includegraphics[scale = .6]{"barrage1"}
-\includegraphics[scale = .6]{"barrage5"} 
+\includegraphics[scale = .6]{barrage1}
+\includegraphics[scale = .6]{barrage5} 
 \caption{Un deuxième test : une goutte d'eau}
 \end{figure}
 
@@ -1124,21 +1126,21 @@ Voici des représentations de la solution à différents instants (approximative
 \begin{figure}[h]
 \begin{center}$
 \begin{array}{ccc}
-\includegraphics[scale = .35]{"t0_tau05.png"} &
-\includegraphics[scale = .35]{"t0_tau.png"} &
-\includegraphics[scale = .35]{"t0_tau2.png"}
+\includegraphics[scale = .35]{t0_tau05.png} &
+\includegraphics[scale = .35]{t0_tau.png} &
+\includegraphics[scale = .35]{t0_tau2.png}
 \\
-\includegraphics[scale = .35]{"t5_tau05.png"} &
-\includegraphics[scale = .35]{"t5_tau.png"} &
-\includegraphics[scale = .35]{"t5_tau2.png"}
+\includegraphics[scale = .35]{t5_tau05.png} &
+\includegraphics[scale = .35]{t5_tau.png} &
+\includegraphics[scale = .35]{t5_tau2.png}
 \\
-\includegraphics[scale = .35]{"t10_tau05.png"} &
-\includegraphics[scale = .35]{"t10_tau.png"} &
-\includegraphics[scale = .35]{"t10_tau2.png"}
+\includegraphics[scale = .35]{t10_tau05.png} &
+\includegraphics[scale = .35]{t10_tau.png} &
+\includegraphics[scale = .35]{t10_tau2.png}
 \\
-\includegraphics[scale = .35]{"t15_tau05.png"} &
-\includegraphics[scale = .35]{"t15_tau.png"} &
-\includegraphics[scale = .35]{"t15_tau2.png"}
+\includegraphics[scale = .35]{t15_tau05.png} &
+\includegraphics[scale = .35]{t15_tau.png} &
+\includegraphics[scale = .35]{t15_tau2.png}
 \end{array}$
 \end{center}
 \caption{Simulations pour différentes valeurs de $\tau$}
