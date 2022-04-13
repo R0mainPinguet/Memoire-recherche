@@ -993,17 +993,17 @@ On peut faire l'hypothèse que le flux de U passant en $x_{i+1/2}$, soit $\mathc
 
 $$ \frac{ U_i ^{n+1} - U_i ^{n}}{\Delta t} + \frac{ \mathcal{F}_{i+1/2} ^n - \mathcal{F}_{i-1/2} ^{n} }{\Delta x} = 0.$$
 
-Toute la question est donc de savoir comment approcher le flux numérique $\mathcal{F}_{i-1/2} ^{n}$ en fonction de $U_i ^n$ et $U_{i+1} ^n$.
+Toute la question est donc de savoir comment approcher le flux numérique $\mathcal{F}_{i+1/2} ^{n}$ en fonction de $U_i ^n$ et $U_{i+1} ^n$. On notera par la suite que $\mathcal{F}_{i+1/2} ^{n} = f(U_i ^n , U_{i+1} ^n)$
 
 \subsubsection{Approche naïve : Flux centré }
 
-On pourrait d'abord penser à approcher le flux $\mathcal{F}_{i-1/2} ^{n}$ par la moyenne entre $x_{i-1/2}$ et $x_{i+1/2}$ :
-
-$$ \mathcal{F}_{i-1/2} = \frac{F(U_{i-1}) + F(U_{i+1})}{2} $$
-
+On pourrait d'abord penser à approcher le flux $\mathcal{F}_{i+1/2} ^{n}$ par la moyenne entre $x_i$ et $x_{i+1}$ :
+ 
+$$ \mathcal{F}_{i+1/2} = \frac{F(U_i) + F(U_{i+1})}{2} $$
+ 
 Et ainsi :
 
-$$ U_i ^{n+1} = U_i ^{n}  - \frac{\Delta t}{2 \Delta x} (F(U_{i+1} ^{n} - F(U_{i-1} ^{n} ) $$
+$$ U_i ^{n+1} = U_i ^{n}  - \frac{\Delta t}{2 \Delta x} (F(U_{i+1} ^{n}) - F(U_{i-1} ^{n} )) $$
 
 Malheureusement, ce flux est instable comme le prouvent ces simulations de rupture de barrage :
 
@@ -1015,7 +1015,7 @@ Les oscillations du débit Q est amplifié au cours du temps. ( Peut être essay
 
 Essayons maintenant avec un terme supplémentaire :
 
-$$ \mathcal{F}_{i-1/2} = \frac{F(U_{i-1}) + F(U_{i+1})}{2} - \alpha \frac{U_i - U_{i-1}}{2} \quad avec \quad \alpha = \frac{\Delta x}{\Delta t}$$
+$$ \mathcal{F}_{i+1/2} = \frac{F(U_i) + F(U_{i+1})}{2} - \alpha \frac{U_{i+1} - U_i}{2} \quad avec \quad \alpha = \frac{\Delta x}{\Delta t}$$
 
 On a donc la formule suivante pour calculer $U_i ^{n+1}$:
 
@@ -1023,12 +1023,29 @@ $$ U_i ^{n+1} = U_i ^{n}  - \frac{\Delta t}{\Delta x} ( \frac{F(U_{i-1}) + F(U_{
 
 En simplifiant, car $ \alpha \frac{\Delta t}{\Delta x} = 1 $, on trouve que :
 
-$$ U_i ^{n+1} = \frac{U_{i+1} ^{n} + U_i ^{n}}{2}  - \frac{\Delta t}{2 \Delta x} ( F(U_{i+1} ^n ) - F(U_{i-1} ^n ) $$
+$$ U_i ^{n+1} = \frac{U_{i+1} ^{n} + U_{i-1} ^{n}}{2}  - \frac{\Delta t}{2 \Delta x} ( F(U_{i+1} ^n ) - F(U_{i-1} ^n ) $$
 
 On verra dans la section suivante que l'on peut choisir $\alpha$ plus finement et ayant les bonnes propriétés en fonction des valeurs propres du système étudié.
 
 \subsubsection{Flux de Rusanov}
 
+Revenons tout d'abord aux critères de choix d'un flux numérique. Deux conditions sont importantes : la consistance et la stabilité.
+
+\textbf{Définition :} On dit que le schéma est consistant avec le système étudié si :
+
+$$ f(U,U) = U \quad \forall U $$ 
+
+\textbf{Définition :} On dit que le schéma est stable s'il préserve un domaine convexe invariant noté C, autrement dit, que les erreurs ne soient pas amplifiées :
+
+$$ U_i ^n \in C \Rightarrow U_i ^{n+1} \in C  $$
+
+En choisissant une valeur d'$\alpha$ bien posée dans le flux de Lax-Friedrichs, on obtient le flux de Rusanov :
+
+$$ \mathcal{F}_{i+1/2} = \frac{F(U_i) + F(U_{i+1})}{2} - \alpha \frac{U_{i+1} - U_i}{2} $$
+
+avec $ \alpha = \underset{U = U_i , U_{i+1}}{\sup} \underset{j = 1 , 2}{\sup} | \lambda_j(U) | $
+
+Ce flux numérique vérifie bien les conditions de consistance et de stabilité.
 
 
 \subsection{Validation de l'implémentation avec des tests}
