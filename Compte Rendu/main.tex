@@ -535,6 +535,18 @@ Soit $f : \mathbb{R}^{2} \rightarrow\mathbb{R}$ telle que $f$ et ${\partial f\ov
 \begin{equation}
 F'(x)=f(x, b(x))b'(x)-f(x,a(x))a'(x)+\int_{a(x)}^{b(x)}{\partial f\over \partial x}(x,y)~\mathrm dy.
 \end{equation}
+\begin{proof}
+Posons $H: \mathbb{R}^{3}\rightarrow\mathbb{R}$, l'application définie par $H(u,v,x)=\int_{u}^{v}f(x,y)~dy$. D'après le théorème fondamental de l'analyse, on a $$\frac{\partial H}{\partial u}(u,v,x)=\frac{\partial}{\partial u}(-\int_{v}^{u}f(x,u))=-f(x,u),$$ et $$\frac{\partial H}{\partial v}(u,v,x)=\frac{\partial}{\partial v}(\int_{u}^{v}f(x,u))=f(x,v).$$ D'après le théorème de dérivation sous le signe somme, on a $$ \frac{\partial H}{\partial x}(u,v,x)=\int_{u}^{v} \frac{\partial f}{\partial x}(x,y)~dy. $$ A partir de là, le théorème est une simple chain rule :
+
+$$F'(x)=(H(a(x), b(x),x))'$$
+$$=\begin{bmatrix} -f(x,a(x))&f(x,b(x))&\frac{\partial H}{\partial x}(a(x),b(x),x) \end{bmatrix} \times \begin{bmatrix}
+a'(x)\\
+b'(x)\\
+1\\
+\end{bmatrix}$$ 
+
+$$= f(x,b(x))b'(x)-f(x,a(x))a'(x)+\int_{a(x)}^{b(x)} \frac{\partial f}{\partial x}(x,y)~dy.$$
+\end{proof}
 \end{prop}
 
 \subsubsection{Les équations d'Euler}
@@ -1009,7 +1021,7 @@ Malheureusement, ce flux est instable comme le prouvent ces simulations de ruptu
 
 \begin{figure}
 \centering
-\includegraphics[scale = .7]{"MauvaisSchema.png"}
+\includegraphics[scale = .7]{MauvaisSchema.png}
 \end{figure}
 
 Les oscillations de la hauteur d'eau h sont amplifiées au cours du temps.
