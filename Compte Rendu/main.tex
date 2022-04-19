@@ -454,6 +454,7 @@ headsepline, % Uncomment to get a line under the header
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{cases}
+\usepackage{comment}
 
 \theoremstyle{definition}
 \newtheorem{definition}{Définition}
@@ -1120,38 +1121,64 @@ rupture de barrage. On observe le résultat suivant :
 
 Ce résultat est conforme à ce que l'on observe dans \cite{RL} page 259. La dynamique des solutions obtenues par notre implémentation est donc la bonne sur ces quelques tests.
 
-\subsubsection{Convergence des solutions}
+\subsubsection{Influence du pas spatial}
 
-D’abord nous allons observer numériquement la convergence de la solution numérique. Nous allons voir que lorsque le nombre $N$ grandit, 
-les courbes de $h$ et $q$ on tendance à se rapprocher d’une courbe limite. Puis nous regarderons l’influence du pas spatial. En particulier, nous verrons ce qu'il se passe lorsque la condition CFL n'est pas vérifiée.
+Nous allons faire une étude de convergence de type Cauchy : si la suite des approximations converge vers une limite, alors l'écart entre deux approximations numériques peut être rendu aussi petit qu'on le souhaite, pourvu que les paramètres de grilles soient assez grands (ou petits selon que l'on considère le nombre de points ou le pas).
 
-\subsubsection{Influence du pas spatial et convergence de la solution}
+Puisque le schéma de Rusanov est convergeant, on peut considérer que la solution calculée est la solution exacte (ou du moins est très proche de la solution exacte) lorsque le pas d'espace est très petit. Notons $U_{ex}$ cette solution que l'on considère exacte et $U_N$ la solution obtenue lorsque le nombre de points (strictement à l'intérieur du domaine) est $N$. On peut alors procéder comme il est courant de le faire au calcul de numérique de l'ordre du schéma, en effectuant le plot de $max_{x_i}|U_{ex}(x_i)-U_N(x_i)|$ ou de la norme $L^{2}$ discrète de $U_{ex}-U_N$ en fonction de $N$ ; les $x_i$ étant les points de la discrétisation.
 
-\begin{figure}[h]
-\begin{center}$
-\begin{array}{ccc}
-\includegraphics[scale = .35]{"deltaT=.5 tau t=0 N=16"} &
-\includegraphics[scale = .35]{"deltaT=.5 tau t=0 N=64"} &
-\includegraphics[scale = .35]{"deltaT=.5 tau t=0 N=256"}
-\\
-\includegraphics[scale = .35]{"deltaT=.5 tau t=10 N=16"} &
-\includegraphics[scale = .35]{"deltaT=.5 tau t=10 N=64"} &
-\includegraphics[scale = .35]{"deltaT=.5 tau t=10 N=256"}
-\\
-\includegraphics[scale = .35]{"deltaT=.5 tau t=20 N=16"} &
-\includegraphics[scale = .35]{"deltaT=.5 tau t=20 N=64"} &
-\includegraphics[scale = .35]{"deltaT=.5 tau t=20 N=256"}
-\\
-\includegraphics[scale = .35]{"deltaT=.5 tau t=30 N=16"} &
-\includegraphics[scale = .35]{"deltaT=.5 tau t=30 N=64"} &
-\includegraphics[scale = .35]{"deltaT=.5 tau t=30 N=256"}
-\end{array}$
-\end{center}
-\caption{Simulations pour $N$ $=$ $16,$ $64$ et $256$}
+Pour faire cette étude, on prend arbitrairement $\textbf{xMin}=0$, $\textbf{xMax}=1$  pour les bords du domaine et $\textbf{Tmax}=0,03$ pour le temps final de la simulation. Pour les conditions initiales on prend $h_{0}(x) = 2+\cos(5x)/2$ et $q_{0}\equiv 1$ pour la hauteur d'eau et le débit à l'instant initial. La topographie est prise constante égale à 0 ($Z\equiv 0$).
+
+La convergence s'observe d'abord visuellement, en faisant le plot des solutions calculées pour des valeurs de $N$ de plus en plus grandes. On peut par exemple représenter graphiquement la hauteur d'eau de la solution $U_{ex}$ avec celle de  $U_N$. Dans la suite $h_{ex}$ et $h_{N}$ désigneront ces quantités. Les figures ci-dessous ont été obtenues avec $N=2^{k}$, $k$ allant de $3$ à $9$.
+
+\begin{figure}
+\includegraphics[scale = .6]{testconv8}
+\includegraphics[scale = .6]{testconv16} 
+\end{figure}
+
+\begin{figure}
+\includegraphics[scale = .6]{testconv32}
+\includegraphics[scale = .6]{testconv64} 
+\end{figure}
+
+\begin{figure}
+\includegraphics[scale = .6]{testconv128}
+\includegraphics[scale = .6]{testconv256} 
 \end{figure}
 
 
-\subsubsection{Influence du pas temporel}
+Regardons maintenant le plot du maximum de l'erreur entre $h_{ex}$ et $h_{N}$. Pour ce faire, on retient les points $x_{i}$ communs aux deux maillages.
+Si la solution $U_{ex}$ correspond à une discrétisation de $N=2^{l}$ point intérieurs (comme c'est le cas dans notre implémentation), alors le maillage correspondant contiendra tous les maillages de $N=2^{k}$  point intérieurs avec $k\leq l$. Ainsi, les points $x_{i}$ communs aux deux maillages sont ceux du maillage pour $U_{N}$. Dès lors, on calcule facilement $max_{x_i}|U_{ex}(x_i)-U_N(x_i)|$. Voici les représentations obtenues avec cette manière de calculer l'erreur :
+
+\begin{figure}
+\includegraphics[scale = .6]{erreur}
+\includegraphics[scale = .6]{erreurloglog} 
+\end{figure}
+
+Voyons maintenant l'erreur en norme $L^{2}$ discrète. Avant \c ca, définissons cette notion. La norme $L^{2}(a,b)$ d'une fonction $u$ de carré intégrable est donnée par $$\| u \|_{L^{2}(a,b)}=(\int_{a}^{b}u^{2}(x)~dx)^{\frac{1}{2}}.$$
+Si $x_{0}=a<x_{1}<...<x_{N}=b$ discrétise $[a,b]$, alors par la relation de Chasles, on a $$\int_{a}^{b}u^{2}(x)~dx=\sum_{i=0}^{N-1}\int_{x_{i}}^{x_{i+1}}u^{2}(x)~dx\approx\sum_{i=0}^{N}u^{2}(x_{i})(x_{i+1}-x_{i}).$$
+On a alors un analogue discret de la norme $L^{2}$ habituelle donné dans la définition qui suit.
+
+\medskip
+
+\begin{definition} Soit $N\in\mathbb{N}$ et $x_{0}=a<x_{1}<...<x_{N+1}=b$ la discrétisation uniforme de $[a,b]$ composée de $N+2$ points (N à l'intérieur et 2 aux bords). Posons $h=\frac{b-a}{N+1}$ le pas du maillage.
+Soit $U=(u_{i})_{0\leq i \leq N+1}$ une approximation de la solution aux points du maillage. On définit la norme $L^{2}$ discrète de $U$ par $\| U \|_{L^{2}}=(h\sum_{i=0}^{N+1}u_{i}^{2})^{\frac{1}{2}}.$
+\end{definition}
+
+Voici les erreurs obtenues avec cette norme :
+
+\begin{figure}
+\includegraphics[scale = .6]{erreurL2}
+\includegraphics[scale = .6]{erreurL2loglog} 
+\end{figure}
+
+En échelle loglog, on observe à chaque fois que l'erreur décroit selon une pente -1. Sur cet exemple, le schéma est donc d'ordre 1.
+
+Des résultats similaires sont obtenus lorsque l'on affiche le débit $q$ plutôt que la hauteur d'eau $h$. De la même fa\c con, on peut faire varier les paramètres $\textbf{xMin}$, $\textbf{xMax}$, $\textbf{Tmax}$ ainsi que les conditions initiales et on arrive aux mêmes conclusions.
+
+\subsubsection{Influence du pas temporel (va être retravaillé)}
+
+\begin{comment}
 
 Voici des représentations de la solution à différents instants (approximativement $t=0, 5, 10, 15$ et $20$ secondes) avec pas de temps égal $0.5\tau, \tau$ et $2\tau$ :
 
@@ -1206,21 +1233,21 @@ On retrouve le même phénomène dans le cas de la goutte d'eau qui tombe au cen
 \caption{Simulations pour différentes valeurs de $\tau$}
 \end{figure}
 
-
 De même, plus le pas temporel est faible, plus la quantité d'eau est conservée au cours du temps. On remarque aussi que la quantité d'eau est bien conservée quand la vague est au centre du repère. Cependant, quand elle atteint le bord et disparait aux limites, la quantité d'eau baisse brutalement ( il suffit de comparer la quantité entre $t=0\ s$ et $t=20\ s$ puis la quantité entre $t=20\ s$ et $t=30\ s$ ). 
+\end{comment}
 
 
 \newpage
 \renewcommand{\thesection}{\Alph{section}}
 \appendix
+\newpage
 \section{Annexes}
 
     \hypertarget{impluxe9mentation-du-schuxe9ma-de-rusanov}{%
-\subsection{Le code : implémentation du schéma de
-Rusanov}\label{impluxe9mentation-du-schuxe9ma-de-rusanov}}
+\subsection{Code de l'implémentation du schéma de Rusanov en 1D}\label{impluxe9mentation-du-schuxe9ma-de-rusanov}}
 
 Voici le code à partir duquel nous avons obtenu les graphes du rapport.
-Ce code permet aussi de générer des fichier .gif et ainsi de visualiser
+Ce code permet aussi de générer des fichiers .gif et ainsi de visualiser
 les évolutions (hauteur d'eau et débit) au cours du temps.
 
     \hypertarget{importations}{%
@@ -1577,10 +1604,388 @@ temps \(t^{n+1}\) suivant la relation explicite suivante :
 \end{Verbatim}
 \end{tcolorbox}
 
-    \begin{Verbatim}[commandchars=\\\{\}]
-Nombre d'itérations : 269
-Gif Sauvegardé dans le dossier sous le nom : movie.gif
-    \end{Verbatim}
+\newpage
+\subsection{Code de l'implémentation du schéma de Rusanov en 2D}
+
+    \subsubsection{Équations dans le cas 2D}
+
+Les équations de Saint-Venant dans en 2D sont les suivantes :
+
+\[ \frac{\partial h}{\partial t} + \frac{\partial hu}{\partial x} + \frac{\partial hv}{\partial y} = 0\]
+
+\[ \frac{\partial hu}{\partial t} + \frac{\partial}{\partial x} ( hu^2 + \frac{gh^2}{2} ) + \frac{\partial}{\partial y} ( huv + \frac{gh^2}{2} ) = 0\]
+
+\[ \frac{\partial hv}{\partial t} + \frac{\partial}{\partial x} ( huv + \frac{gh^2}{2} ) + \frac{\partial}{\partial y} ( hv^2 + \frac{gh^2}{2} ) = 0\]
+
+On fait l'implémentation du cas 2D sur le même modèle que dans le cas
+1D.
+
+    \hypertarget{importations}{%
+\subsubsection*{Importations}\label{importations}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{math} \PY{k}{as} \PY{n+nn}{math} \PY{c+c1}{\PYZsh{} Pour les fonctions math}
+
+\PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt} \PY{c+c1}{\PYZsh{} Pour l\PYZsq{}affichage des graphes}
+\PY{k+kn}{from} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{backends}\PY{n+nn}{.}\PY{n+nn}{backend\PYZus{}agg} \PY{k+kn}{import} \PY{n}{FigureCanvasAgg} \PY{k}{as} \PY{n}{FigureCanvas}
+\PY{k+kn}{from} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{figure} \PY{k+kn}{import} \PY{n}{Figure}
+\PY{k+kn}{from} \PY{n+nn}{mpl\PYZus{}toolkits} \PY{k+kn}{import} \PY{n}{mplot3d} 
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{rc}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{font}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{size}\PY{o}{=}\PY{l+m+mi}{20}\PY{p}{)}
+
+\PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np} \PY{c+c1}{\PYZsh{} Pour les tableaux numpy}
+\PY{k+kn}{import} \PY{n+nn}{imageio} \PY{c+c1}{\PYZsh{} Pour faire des .gif}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{paramuxe8tres-du-probluxe8me}{%
+\subsubsection{Paramètres du problème}\label{paramuxe8tres-du-probluxe8me}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{g}\PY{o}{=}\PY{l+m+mi}{1} \PY{c+c1}{\PYZsh{} Constante gravitationnelle}
+
+\PY{n}{xMin}\PY{o}{=}\PY{l+m+mi}{0} \PY{c+c1}{\PYZsh{} Bord gauche du domaine}
+\PY{n}{xMax}\PY{o}{=}\PY{l+m+mi}{100} \PY{c+c1}{\PYZsh{} Bord droit du domaine}
+
+\PY{n}{yMin} \PY{o}{=} \PY{l+m+mi}{0} \PY{c+c1}{\PYZsh{}Bord bas du domaine}
+\PY{n}{yMax} \PY{o}{=} \PY{l+m+mi}{100} \PY{c+c1}{\PYZsh{}Bord haut du domaine}
+
+\PY{n}{N}\PY{o}{=}\PY{l+m+mi}{64} \PY{c+c1}{\PYZsh{} Nombre de points (strictement à l\PYZsq{}intérieur)}
+\PY{c+c1}{\PYZsh{} Donc au total, on considère (N+2)\PYZca{}2 points avec les bords}
+
+\PY{n}{h}\PY{o}{=}\PY{p}{(}\PY{n}{xMax}\PY{o}{\PYZhy{}}\PY{n}{xMin}\PY{p}{)}\PY{o}{/}\PY{p}{(}\PY{n}{N}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)} \PY{c+c1}{\PYZsh{} Pas du maillage spatial, le même pour X et Y}
+
+\PY{n}{Tmax}\PY{o}{=}\PY{l+m+mi}{10} \PY{c+c1}{\PYZsh{} Temps final de la simulation}
+\PY{n}{t}\PY{o}{=}\PY{l+m+mi}{0} \PY{c+c1}{\PYZsh{} Temps dans la simulation}
+\PY{n}{n}\PY{o}{=}\PY{l+m+mi}{0} \PY{c+c1}{\PYZsh{} Nombre d\PYZsq{}itérations}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{conditions-initiales}{%
+\subsubsection*{Conditions initiales}\label{conditions-initiales}}
+
+Dans la cellule ci-dessous, nous définissons la discrétisation de l'axe
+des abscisses \(\textbf{X}\), ainsi que les profils initiaux de la
+hauteur d'eau \(h\) et des débits \(hu\) et \(hv\).
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{72}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{X}\PY{p}{,}\PY{n}{Y}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{mgrid}\PY{p}{[}\PY{n}{xMin}\PY{p}{:}\PY{n}{xMax}\PY{o}{+}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{h}\PY{o}{/}\PY{l+m+mi}{3}\PY{p}{:}\PY{n}{h}\PY{p}{,}\PY{n}{yMin}\PY{p}{:}\PY{n}{yMax}\PY{o}{+}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{h}\PY{o}{/}\PY{l+m+mi}{3}\PY{p}{:}\PY{n}{h}\PY{p}{]} \PY{c+c1}{\PYZsh{} Discrétisation de [xMin, xMax] et [yMin, yMax]}
+\PY{n}{XY} \PY{o}{=} \PY{n}{X}\PY{o}{+}\PY{n}{Y}\PY{o}{*}\PY{l+m+mi}{1}\PY{n}{j}
+
+\PY{n}{W0} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{ones}\PY{p}{(}\PY{p}{[}\PY{n}{N}\PY{o}{+}\PY{l+m+mi}{2}\PY{p}{,}\PY{n}{N}\PY{o}{+}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{)} \PY{c+c1}{\PYZsh{} Discrétisation de h}
+\PY{n}{W1} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{ones}\PY{p}{(}\PY{p}{[}\PY{n}{N}\PY{o}{+}\PY{l+m+mi}{2}\PY{p}{,}\PY{n}{N}\PY{o}{+}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{)} \PY{c+c1}{\PYZsh{} Discrétisation de hu}
+\PY{n}{W2} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{ones}\PY{p}{(}\PY{p}{[}\PY{n}{N}\PY{o}{+}\PY{l+m+mi}{2}\PY{p}{,}\PY{n}{N}\PY{o}{+}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{)} \PY{c+c1}{\PYZsh{} Discrétisation de hv}
+
+\PY{c+c1}{\PYZsh{} Définitions du h initial \PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}}
+
+\PY{c+c1}{\PYZsh{} Hauteur de l\PYZsq{}eau en escalier }
+\PY{c+c1}{\PYZsh{} W0[0,0:(N+2)//3]   = 3}
+\PY{c+c1}{\PYZsh{} W0[0,(N+2)//3:N+2] = 1.25}
+
+\PY{c+c1}{\PYZsh{} Hauteur de l\PYZsq{}eau constante}
+\PY{c+c1}{\PYZsh{} W0[0,:]=1}
+
+\PY{c+c1}{\PYZsh{} Hauteur de l\PYZsq{}eau en bosse}
+\PY{n}{W0} \PY{o}{=} \PY{l+m+mi}{1}\PY{o}{+}\PY{l+m+mi}{5}\PY{o}{/}\PY{p}{(}\PY{l+m+mi}{4} \PY{o}{+} \PY{l+m+mf}{.01}\PY{o}{*}\PY{p}{(} \PY{p}{(}\PY{n}{X}\PY{o}{\PYZhy{}}\PY{l+m+mi}{50}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{+} \PY{p}{(}\PY{n}{Y}\PY{o}{\PYZhy{}}\PY{l+m+mi}{50}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{p}{)} \PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Définitions du débit initial \PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}}
+
+\PY{c+c1}{\PYZsh{} Débit de l\PYZsq{}eau constant}
+\PY{n}{W1}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{p}{:}\PY{p}{]}\PY{o}{=}\PY{l+m+mi}{0}
+\PY{n}{W2}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{p}{:}\PY{p}{]}\PY{o}{=}\PY{l+m+mi}{0}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{nombre-de-sauvegardes-durant-la-simulation}{%
+\subsubsection{Nombre de sauvegardes durant la
+simulation}\label{nombre-de-sauvegardes-durant-la-simulation}}
+
+Quelques variables qui vont nous servir pour enregistrer des étapes de
+la simulation, sans pour autant les sauvegarder toutes. Sans ça, le
+nombre d'images à sauver deviendrait vite trop important.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{73}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{nSauvegarde}\PY{o}{=}\PY{l+m+mi}{100} \PY{c+c1}{\PYZsh{} Nombre de sauvegardes au cours de la simulation}
+\PY{n}{tSauvegarde}\PY{o}{=}\PY{p}{[}\PY{k+kc}{False} \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{nSauvegarde}\PY{p}{)}\PY{p}{]}
+\PY{n}{images}\PY{o}{=}\PY{p}{[}\PY{p}{]}
+\PY{n}{k}\PY{o}{=}\PY{l+m+mi}{0} \PY{c+c1}{\PYZsh{} Nombre de sauvegardes déjà effectuées}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{affichage-des-images}{%
+\subsubsection{Affichage des images}\label{affichage-des-images}}
+
+La fonction ci-dessous permet de gérer l'affichage de la solution. Elle
+est suivie d'un test. Les graphes qui s'affichent sont ceux de \(h\) et
+\(q\) à \(t=0\).
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{74}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{affiche\PYZus{}W}\PY{p}{(}\PY{n}{t}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{,}\PY{n}{index}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{)}\PY{p}{:}
+    
+    \PY{c+c1}{\PYZsh{}index : suivant que l\PYZsq{}on veuille afficher h, u ou v}
+    
+    \PY{n}{t\PYZus{}int}\PY{o}{=}\PY{n+nb}{round}\PY{p}{(}\PY{n}{t}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{)} \PY{c+c1}{\PYZsh{} Troncature de t après la 4eme décimale}
+    
+    \PY{n}{fig} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize} \PY{o}{=}\PY{p}{(}\PY{l+m+mi}{14}\PY{p}{,} \PY{l+m+mi}{9}\PY{p}{)}\PY{p}{)} 
+    \PY{n}{ax} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{axes}\PY{p}{(}\PY{n}{projection} \PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{3d}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)} 
+
+    \PY{k}{if}\PY{p}{(}\PY{n}{index}\PY{o}{==}\PY{l+m+mi}{0}\PY{p}{)}\PY{p}{:}
+        \PY{n}{ax}\PY{o}{.}\PY{n}{plot\PYZus{}surface}\PY{p}{(}\PY{n}{X}\PY{p}{,} \PY{n}{Y}\PY{p}{,} \PY{n}{W0}\PY{p}{)} 
+        \PY{n}{ax}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{h}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{fontweight}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{bold}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{pad}\PY{o}{=}\PY{l+m+mi}{15}\PY{p}{)}
+        \PY{n}{ax}\PY{o}{.}\PY{n}{set\PYZus{}zlim}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{]}\PY{p}{)}
+    \PY{k}{elif}\PY{p}{(}\PY{n}{index}\PY{o}{==}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{:}
+        \PY{n}{ax}\PY{o}{.}\PY{n}{plot\PYZus{}surface}\PY{p}{(}\PY{n}{X}\PY{p}{,} \PY{n}{Y}\PY{p}{,} \PY{n}{W1}\PY{p}{)}
+        \PY{n}{ax}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{hu}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{fontweight}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{bold}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{pad}\PY{o}{=}\PY{l+m+mi}{15}\PY{p}{)}
+        \PY{n}{ax}\PY{o}{.}\PY{n}{set\PYZus{}zlim}\PY{p}{(}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}
+    \PY{k}{elif}\PY{p}{(}\PY{n}{index}\PY{o}{==}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{:}
+        \PY{n}{ax}\PY{o}{.}\PY{n}{plot\PYZus{}surface}\PY{p}{(}\PY{n}{X}\PY{p}{,} \PY{n}{Y}\PY{p}{,} \PY{n}{W2}\PY{p}{)}
+        \PY{n}{ax}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{hv}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{fontweight}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{bold}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{pad}\PY{o}{=}\PY{l+m+mi}{15}\PY{p}{)}
+        \PY{n}{ax}\PY{o}{.}\PY{n}{set\PYZus{}zlim}\PY{p}{(}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}
+    \PY{k}{else}\PY{p}{:}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Mauvaise valeur d}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{index}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        
+    \PY{n}{fig}\PY{o}{.}\PY{n}{suptitle}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{t = }\PY{l+s+s2}{\PYZdq{}}\PY{o}{+}\PY{n+nb}{str}\PY{p}{(}\PY{n}{t\PYZus{}int}\PY{p}{)}\PY{p}{,}\PY{n}{style}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{italic}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{size}\PY{o}{=}\PY{l+m+mi}{30}\PY{p}{)}
+            
+    \PY{n}{ax}\PY{o}{.}\PY{n}{set\PYZus{}xlim}\PY{p}{(}\PY{p}{[}\PY{n}{xMin}\PY{p}{,}\PY{n}{xMax}\PY{p}{]}\PY{p}{)}
+    \PY{n}{ax}\PY{o}{.}\PY{n}{set\PYZus{}ylim}\PY{p}{(}\PY{p}{[}\PY{n}{yMin}\PY{p}{,}\PY{n}{yMax}\PY{p}{]}\PY{p}{)}
+        
+    \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+    
+\PY{c+c1}{\PYZsh{}Affichage de h, u et v}
+\PY{n}{affiche\PYZus{}W}\PY{p}{(}\PY{p}{)}
+\PY{n}{affiche\PYZus{}W}\PY{p}{(}\PY{n}{index}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{affiche\PYZus{}W}\PY{p}{(}\PY{n}{index}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \includegraphics[scale=0.75]{output_11_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \includegraphics[scale=0.75]{output_11_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \includegraphics[scale=0.75]{output_11_2.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{sauvegarde-des-images}{%
+\subsubsection{Sauvegarde des images}\label{sauvegarde-des-images}}
+
+\emph{enregistre\_W} effectue un traitement identique à
+\emph{affiche\_W}. La seule différence est qu'elle enregistre le plot
+dans le répertoire courant plutôt que de l'afficher.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{75}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{enregistre\PYZus{}W}\PY{p}{(}\PY{n}{t}\PY{p}{,}\PY{n}{index}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{)}\PY{p}{:}
+
+    \PY{n}{t\PYZus{}int}\PY{o}{=}\PY{n+nb}{round}\PY{p}{(}\PY{n}{t}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{)} \PY{c+c1}{\PYZsh{} Troncature de t après la 4eme décimale}
+      
+    \PY{n}{fig} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize} \PY{o}{=}\PY{p}{(}\PY{l+m+mi}{14}\PY{p}{,} \PY{l+m+mi}{9}\PY{p}{)}\PY{p}{)} 
+    \PY{n}{ax} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{axes}\PY{p}{(}\PY{n}{projection} \PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{3d}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)} 
+
+    \PY{k}{if}\PY{p}{(}\PY{n}{index}\PY{o}{==}\PY{l+m+mi}{0}\PY{p}{)}\PY{p}{:}
+        \PY{n}{ax}\PY{o}{.}\PY{n}{plot\PYZus{}surface}\PY{p}{(}\PY{n}{X}\PY{p}{,} \PY{n}{Y}\PY{p}{,} \PY{n}{W0}\PY{p}{)} 
+        \PY{n}{ax}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{h}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{fontweight}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{bold}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{pad}\PY{o}{=}\PY{l+m+mi}{15}\PY{p}{)}
+        \PY{n}{ax}\PY{o}{.}\PY{n}{set\PYZus{}zlim}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{]}\PY{p}{)}
+    \PY{k}{elif}\PY{p}{(}\PY{n}{index}\PY{o}{==}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{:}
+        \PY{n}{ax}\PY{o}{.}\PY{n}{plot\PYZus{}surface}\PY{p}{(}\PY{n}{X}\PY{p}{,} \PY{n}{Y}\PY{p}{,} \PY{n}{W1}\PY{p}{)}
+        \PY{n}{ax}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{hu}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{fontweight}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{bold}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{pad}\PY{o}{=}\PY{l+m+mi}{15}\PY{p}{)}
+        \PY{n}{ax}\PY{o}{.}\PY{n}{set\PYZus{}zlim}\PY{p}{(}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}
+    \PY{k}{elif}\PY{p}{(}\PY{n}{index}\PY{o}{==}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{:}
+        \PY{n}{ax}\PY{o}{.}\PY{n}{plot\PYZus{}surface}\PY{p}{(}\PY{n}{X}\PY{p}{,} \PY{n}{Y}\PY{p}{,} \PY{n}{W2}\PY{p}{)}
+        \PY{n}{ax}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{hv}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{fontweight}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{bold}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{pad}\PY{o}{=}\PY{l+m+mi}{15}\PY{p}{)}
+        \PY{n}{ax}\PY{o}{.}\PY{n}{set\PYZus{}zlim}\PY{p}{(}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}
+    \PY{k}{else}\PY{p}{:}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Mauvaise valeur d}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{index}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        
+    \PY{n}{fig}\PY{o}{.}\PY{n}{suptitle}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{t = }\PY{l+s+s2}{\PYZdq{}}\PY{o}{+}\PY{n+nb}{str}\PY{p}{(}\PY{n}{t\PYZus{}int}\PY{p}{)}\PY{p}{,}\PY{n}{style}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{italic}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{size}\PY{o}{=}\PY{l+m+mi}{30}\PY{p}{)}
+            
+    \PY{n}{ax}\PY{o}{.}\PY{n}{set\PYZus{}xlim}\PY{p}{(}\PY{p}{[}\PY{n}{xMin}\PY{p}{,}\PY{n}{xMax}\PY{p}{]}\PY{p}{)}
+    \PY{n}{ax}\PY{o}{.}\PY{n}{set\PYZus{}ylim}\PY{p}{(}\PY{p}{[}\PY{n}{yMin}\PY{p}{,}\PY{n}{yMax}\PY{p}{]}\PY{p}{)}
+    
+
+    \PY{n}{fig}\PY{o}{.}\PY{n}{canvas}\PY{o}{.}\PY{n}{draw}\PY{p}{(}\PY{p}{)}
+    \PY{n}{image\PYZus{}from\PYZus{}plot}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{frombuffer}\PY{p}{(}\PY{n}{fig}\PY{o}{.}\PY{n}{canvas}\PY{o}{.}\PY{n}{tostring\PYZus{}rgb}\PY{p}{(}\PY{p}{)}\PY{p}{,} \PY{n}{dtype}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{uint8}\PY{p}{)}
+    \PY{n}{image\PYZus{}from\PYZus{}plot}\PY{o}{=}\PY{n}{image\PYZus{}from\PYZus{}plot}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{n}{fig}\PY{o}{.}\PY{n}{canvas}\PY{o}{.}\PY{n}{get\PYZus{}width\PYZus{}height}\PY{p}{(}\PY{p}{)}\PY{p}{[}\PY{p}{:}\PY{p}{:}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{+}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{,}\PY{p}{)}\PY{p}{)}
+    
+    \PY{n}{images}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{image\PYZus{}from\PYZus{}plot}\PY{p}{)}
+   
+    \PY{n}{plt}\PY{o}{.}\PY{n}{close}\PY{p}{(}\PY{p}{)}
+    
+\PY{n}{enregistre\PYZus{}W}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{n}{index}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \subsubsection{Fonctions intervenant dans le schéma}
+
+En posant : $W =
+\left[ {\begin{array}{c}   h \\    hu \\    hv \\  \end{array} } \right] $
+; $ F(W) =
+\left[ {\begin{array}{c}   hu \\    hu^2 + \frac{gh^2}{2}  \\    huv + \frac{gh^2}{2} \\  \end{array} } \right] $
+; $ G(W) =
+\left[ {\begin{array}{c}   hv \\    huv + \frac{gh^2}{2}  \\    hv^2 + \frac{gh^2}{2} \\  \end{array} } \right] $
+
+Avec \(h\) la hauteur de l'eau, \(u\) sa vitesse suivant la direction
+\(x\) et \(v\) sa vitesse suivant la direction \(y\).
+
+On a le système suivant :
+
+\[ \frac{\partial W}{\partial t} + \frac{\partial F(W)}{\partial x} + \frac{\partial G(W)}{\partial y} = 0 \]
+
+En identifiant \(F(W)\) au flux suivant \(x\) et \(G(W)\) au flux
+suivant \(y\).
+
+En s'inspirant de ce qui a été fait dans le cas 1D, on discrétise de la
+manière suivante :
+
+\[ \frac{ W_{i,j}^{n+1} - W_{i,j}^{n} }{\Delta t} + \frac{ F_{i+\frac{1}{2},j}^{n} -  F_{i-\frac{1}{2},j}^{n} }{\Delta x} + \frac{G_{i,j+\frac{1}{2}}^{n} -  G_{i,j-\frac{1}{2}}^{n} }{\Delta y} = 0 \]
+
+Ce qui nous donne finalement :
+
+\[  W_{i,j}^{n+1} = W_{i,j}^n - \frac{\Delta t}{\Delta x} ( F_{i+\frac{1}{2},j}^{n} -  F_{i-\frac{1}{2},j}^{n} ) - \frac{\Delta t}{\Delta y} ( G_{i,j+\frac{1}{2}}^{n} -  G_{i,j-\frac{1}{2}}^{n} ) \]
+
+Avec :
+
+\[ F_{i+\frac{1}{2},j} =  \frac{ F(W_{i+1,j}) + F(W_{i,j}) }{2} - c \frac{ W_{i+1,j} - W_{i,j} }{2} \quad où \quad c = \sup_{W =  W_{i,j} ,  W_{i+1,j}} \sup_{k = 1,2} | \lambda _k(W) | \]
+
+et
+
+\[ G_{i,j+\frac{1}{2}} =  \frac{ G(W_{i,j+1}) + G(W_{i,j}) }{2} - c \frac{ W_{i,j+1} - W_{i,j} }{2} \quad où \quad c = \sup_{W =  W_{i,j} ,  W_{i,j+1}} \sup_{k = 1,2} | \lambda _k(W) | \]
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{76}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{F}\PY{p}{(}\PY{n}{w0}\PY{p}{,}\PY{n}{w1}\PY{p}{,}\PY{n}{w2}\PY{p}{)}\PY{p}{:}
+    \PY{k}{return} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{n}{w1} \PY{p}{,} \PY{n}{w1}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{/} \PY{n}{w0} \PY{o}{+} \PY{n}{g} \PY{o}{*} \PY{n}{w0}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{/} \PY{l+m+mi}{2} \PY{p}{,} \PY{n}{w1}\PY{o}{*}\PY{n}{w2}\PY{o}{/}\PY{n}{w0} \PY{o}{+} \PY{n}{g} \PY{o}{*} \PY{n}{w0}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{)}
+
+\PY{k}{def} \PY{n+nf}{G}\PY{p}{(}\PY{n}{w0}\PY{p}{,}\PY{n}{w1}\PY{p}{,}\PY{n}{w2}\PY{p}{)}\PY{p}{:}
+    \PY{k}{return} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{n}{w2} \PY{p}{,} \PY{n}{w1}\PY{o}{*}\PY{n}{w2}\PY{o}{/} \PY{n}{w0} \PY{o}{+} \PY{n}{g} \PY{o}{*} \PY{n}{w0}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{/} \PY{l+m+mi}{2} \PY{p}{,} \PY{n}{w2}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{/}\PY{n}{w0} \PY{o}{+} \PY{n}{g} \PY{o}{*} \PY{n}{w0}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{)}
+
+
+\PY{k}{def} \PY{n+nf}{vmaxF}\PY{p}{(}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{)}\PY{p}{:} \PY{c+c1}{\PYZsh{}vmax du premier système : u , u+sqrt(gh) ou u\PYZhy{}sqrt(gh)}
+    
+    \PY{n}{res} \PY{o}{=} \PY{n}{W1}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{]} \PY{o}{/} \PY{n}{W0}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{]}
+    
+    \PY{n}{res} \PY{o}{=} \PY{n+nb}{max}\PY{p}{(}\PY{n}{res}\PY{p}{,}\PY{n+nb}{abs}\PY{p}{(} \PY{n}{W1}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{]}\PY{o}{/}\PY{n}{W0}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{]} \PY{o}{+} \PY{n}{math}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{n}{g}\PY{o}{*}\PY{n}{W0}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+    \PY{n}{res} \PY{o}{=} \PY{n+nb}{max}\PY{p}{(}\PY{n}{res}\PY{p}{,}\PY{n+nb}{abs}\PY{p}{(} \PY{n}{W1}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{]}\PY{o}{/}\PY{n}{W0}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{]} \PY{o}{\PYZhy{}} \PY{n}{math}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{n}{g}\PY{o}{*}\PY{n}{W0}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+
+    \PY{n}{res} \PY{o}{=} \PY{n+nb}{max}\PY{p}{(}\PY{n}{res}\PY{p}{,}\PY{n+nb}{abs}\PY{p}{(} \PY{n}{W1}\PY{p}{[}\PY{n}{i}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{,}\PY{n}{j}\PY{p}{]}\PY{o}{/}\PY{n}{W0}\PY{p}{[}\PY{n}{i}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{,}\PY{n}{j}\PY{p}{]} \PY{o}{+} \PY{n}{math}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{n}{g}\PY{o}{*}\PY{n}{W0}\PY{p}{[}\PY{n}{i}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{,}\PY{n}{j}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+    \PY{n}{res} \PY{o}{=} \PY{n+nb}{max}\PY{p}{(}\PY{n}{res}\PY{p}{,}\PY{n+nb}{abs}\PY{p}{(} \PY{n}{W1}\PY{p}{[}\PY{n}{i}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{,}\PY{n}{j}\PY{p}{]}\PY{o}{/}\PY{n}{W0}\PY{p}{[}\PY{n}{i}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{,}\PY{n}{j}\PY{p}{]} \PY{o}{\PYZhy{}} \PY{n}{math}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{n}{g}\PY{o}{*}\PY{n}{W0}\PY{p}{[}\PY{n}{i}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{,}\PY{n}{j}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+
+    \PY{k}{return} \PY{n}{res}
+
+\PY{k}{def} \PY{n+nf}{vmaxG}\PY{p}{(}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{)}\PY{p}{:} \PY{c+c1}{\PYZsh{}vmax du deuxième système : v , v+sqrt(gh) ou v\PYZhy{}sqrt(gh)}
+    
+    \PY{n}{res} \PY{o}{=} \PY{n}{W2}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{]} \PY{o}{/} \PY{n}{W0}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{]}
+    
+    \PY{n}{res} \PY{o}{=} \PY{n+nb}{max}\PY{p}{(}\PY{n}{res}\PY{p}{,}\PY{n+nb}{abs}\PY{p}{(} \PY{n}{W2}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{]}\PY{o}{/}\PY{n}{W0}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{]} \PY{o}{+} \PY{n}{math}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{n}{g}\PY{o}{*}\PY{n}{W0}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+    \PY{n}{res} \PY{o}{=} \PY{n+nb}{max}\PY{p}{(}\PY{n}{res}\PY{p}{,}\PY{n+nb}{abs}\PY{p}{(} \PY{n}{W2}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{]}\PY{o}{/}\PY{n}{W0}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{]} \PY{o}{\PYZhy{}} \PY{n}{math}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{n}{g}\PY{o}{*}\PY{n}{W0}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+
+    \PY{n}{res} \PY{o}{=} \PY{n+nb}{max}\PY{p}{(}\PY{n}{res}\PY{p}{,}\PY{n+nb}{abs}\PY{p}{(} \PY{n}{W2}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{/}\PY{n}{W0}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{+} \PY{n}{math}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{n}{g}\PY{o}{*}\PY{n}{W0}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+    \PY{n}{res} \PY{o}{=} \PY{n+nb}{max}\PY{p}{(}\PY{n}{res}\PY{p}{,}\PY{n+nb}{abs}\PY{p}{(} \PY{n}{W2}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{/}\PY{n}{W0}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{\PYZhy{}} \PY{n}{math}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{n}{g}\PY{o}{*}\PY{n}{W0}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+
+    \PY{k}{return}\PY{p}{(}\PY{n}{res}\PY{p}{)}
+
+\PY{k}{def} \PY{n+nf}{F\PYZus{}ronde}\PY{p}{(}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{)}\PY{p}{:}
+    \PY{n}{termeW} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[} \PY{n}{W0}\PY{p}{[}\PY{n}{i}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{,}\PY{n}{j}\PY{p}{]}\PY{o}{\PYZhy{}}\PY{n}{W0}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{]} \PY{p}{,} \PY{n}{W1}\PY{p}{[}\PY{n}{i}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{,}\PY{n}{j}\PY{p}{]}\PY{o}{\PYZhy{}}\PY{n}{W1}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{]} \PY{p}{,}\PY{n}{W2}\PY{p}{[}\PY{n}{i}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{,}\PY{n}{j}\PY{p}{]}\PY{o}{\PYZhy{}}\PY{n}{W2}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{]} \PY{p}{]} \PY{p}{)}\PY{o}{/}\PY{l+m+mi}{2}
+    
+    \PY{k}{return} \PY{p}{(}\PY{n}{F}\PY{p}{(}\PY{n}{W0}\PY{p}{[}\PY{n}{i}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{,}\PY{n}{j}\PY{p}{]}\PY{p}{,}\PY{n}{W1}\PY{p}{[}\PY{n}{i}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{,}\PY{n}{j}\PY{p}{]}\PY{p}{,}\PY{n}{W2}\PY{p}{[}\PY{n}{i}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{,}\PY{n}{j}\PY{p}{]}\PY{p}{)}\PY{o}{+}\PY{n}{F}\PY{p}{(}\PY{n}{W0}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{]}\PY{p}{,}\PY{n}{W1}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{]}\PY{p}{,}\PY{n}{W2}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{o}{/}\PY{l+m+mi}{2}\PY{o}{\PYZhy{}}\PY{n}{vmaxF}\PY{p}{(}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{)} \PY{o}{*} \PY{n}{termeW}
+
+\PY{k}{def} \PY{n+nf}{G\PYZus{}ronde}\PY{p}{(}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{)}\PY{p}{:}
+    \PY{n}{termeW} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[} \PY{n}{W0}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{\PYZhy{}}\PY{n}{W0}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{]} \PY{p}{,} \PY{n}{W1}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{]}\PY{o}{\PYZhy{}}\PY{n}{W1}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{]} \PY{p}{,}\PY{n}{W2}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{\PYZhy{}}\PY{n}{W2}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{]} \PY{p}{]} \PY{p}{)}\PY{o}{/}\PY{l+m+mi}{2}
+    
+    \PY{k}{return} \PY{p}{(}\PY{n}{G}\PY{p}{(}\PY{n}{W0}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,}\PY{n}{W1}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,}\PY{n}{W2}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}\PY{o}{+}\PY{n}{G}\PY{p}{(}\PY{n}{W0}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{]}\PY{p}{,}\PY{n}{W1}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{]}\PY{p}{,}\PY{n}{W2}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{o}{/}\PY{l+m+mi}{2}\PY{o}{\PYZhy{}}\PY{n}{vmaxG}\PY{p}{(}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{)} \PY{o}{*} \PY{n}{termeW}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{77}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{conditionBord}\PY{p}{(}\PY{p}{)}\PY{p}{:}
+
+    \PY{c+c1}{\PYZsh{} Conditions aux bords sur h}
+    \PY{n}{W0}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{=} \PY{n}{W0}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}
+    \PY{n}{W0}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{n}{N}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{=} \PY{n}{W0}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{n}{N}\PY{p}{]}
+    \PY{n}{W0}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{p}{:}\PY{p}{]} \PY{o}{=} \PY{n}{W0}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{p}{:}\PY{p}{]}
+    \PY{n}{W0}\PY{p}{[}\PY{n}{N}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{,}\PY{p}{:}\PY{p}{]} \PY{o}{=} \PY{n}{W0}\PY{p}{[}\PY{n}{N}\PY{p}{,}\PY{p}{:}\PY{p}{]}
+    
+    \PY{c+c1}{\PYZsh{} Conditions aux bords sur hu}
+    \PY{n}{W1}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{=} \PY{n}{W1}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}
+    \PY{n}{W1}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{n}{N}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{=} \PY{n}{W1}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{n}{N}\PY{p}{]}
+    \PY{n}{W1}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{p}{:}\PY{p}{]} \PY{o}{=} \PY{n}{W1}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{p}{:}\PY{p}{]}
+    \PY{n}{W1}\PY{p}{[}\PY{n}{N}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{,}\PY{p}{:}\PY{p}{]} \PY{o}{=} \PY{n}{W1}\PY{p}{[}\PY{n}{N}\PY{p}{,}\PY{p}{:}\PY{p}{]}
+    
+    \PY{c+c1}{\PYZsh{} Conditions aux bords sur hv}
+    \PY{n}{W2}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{=} \PY{n}{W2}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}
+    \PY{n}{W2}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{n}{N}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{=} \PY{n}{W2}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{n}{N}\PY{p}{]}
+    \PY{n}{W2}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{p}{:}\PY{p}{]} \PY{o}{=} \PY{n}{W2}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{p}{:}\PY{p}{]}
+    \PY{n}{W2}\PY{p}{[}\PY{n}{N}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{,}\PY{p}{:}\PY{p}{]} \PY{o}{=} \PY{n}{W2}\PY{p}{[}\PY{n}{N}\PY{p}{,}\PY{p}{:}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+    Pour rappel :
+
+\[  W_{i,j}^{n+1} = W_{i,j}^n - \frac{\Delta t}{\Delta x} ( F_{i+\frac{1}{2},j}^{n} -  F_{i-\frac{1}{2},j}^{n} ) - \frac{\Delta t}{\Delta y} ( G_{i,j+\frac{1}{2}}^{n} -  G_{i,j-\frac{1}{2}}^{n} ) \]
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{78}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{while}\PY{p}{(}\PY{n}{t}\PY{o}{\PYZlt{}}\PY{n}{Tmax}\PY{p}{)}\PY{p}{:} \PY{c+c1}{\PYZsh{} Tant que le temps max n\PYZsq{}est pas atteint :}
+    
+    \PY{n}{M} \PY{o}{=} \PY{l+m+mi}{0}
+    \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{N}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{:}
+        \PY{k}{for} \PY{n}{j} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{n}{N}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{:}
+            \PY{n}{M} \PY{o}{=} \PY{n+nb}{max}\PY{p}{(}\PY{n}{M}\PY{p}{,} \PY{n}{vmaxF}\PY{p}{(}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{)}\PY{p}{)}
+            \PY{n}{M} \PY{o}{=} \PY{n+nb}{max}\PY{p}{(}\PY{n}{M}\PY{p}{,} \PY{n}{vmaxG}\PY{p}{(}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{)}\PY{p}{)}
+    
+    \PY{c+c1}{\PYZsh{} Pour assurer la stabilité, tau doit être inférieur à h/(2* max(vp))}
+    \PY{n}{tau} \PY{o}{=} \PY{l+m+mf}{0.8}\PY{o}{*}\PY{n}{h}\PY{o}{/}\PY{p}{(}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{M}\PY{p}{)}
+    
+    \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{N}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{:}
+        \PY{k}{for} \PY{n}{j} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{N}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{:}
+
+            \PY{n}{W} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[} \PY{n}{W0}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{]}\PY{p}{,}\PY{n}{W1}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{]}\PY{p}{,}\PY{n}{W2}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{]} \PY{p}{]}\PY{p}{)}
+            \PY{n}{W} \PY{o}{=} \PY{n}{W} \PY{o}{\PYZhy{}} \PY{n}{tau}\PY{o}{/}\PY{n}{h} \PY{o}{*} \PY{p}{(} \PY{n}{F\PYZus{}ronde}\PY{p}{(}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{)} \PY{o}{\PYZhy{}} \PY{n}{F\PYZus{}ronde}\PY{p}{(}\PY{n}{i}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{,}\PY{n}{j}\PY{p}{)} \PY{p}{)} \PY{c+c1}{\PYZsh{}Terme avec les F ronde}
+            \PY{n}{W} \PY{o}{=} \PY{n}{W} \PY{o}{\PYZhy{}} \PY{n}{tau}\PY{o}{/}\PY{n}{h} \PY{o}{*} \PY{p}{(} \PY{n}{G\PYZus{}ronde}\PY{p}{(}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{)} \PY{o}{\PYZhy{}} \PY{n}{G\PYZus{}ronde}\PY{p}{(}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)} \PY{p}{)} \PY{c+c1}{\PYZsh{}Terme avec les G ronde}
+            
+            \PY{n}{W0}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{]} \PY{o}{=} \PY{n}{W}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} 
+            \PY{n}{W1}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{]} \PY{o}{=} \PY{n}{W}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}
+            \PY{n}{W2}\PY{p}{[}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{]} \PY{o}{=} \PY{n}{W}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}
+
+    \PY{n}{conditionBord}\PY{p}{(}\PY{p}{)} \PY{c+c1}{\PYZsh{}Conditions aux bords sur h , hu et hv}
+    
+    \PY{n}{t}\PY{o}{+}\PY{o}{=}\PY{n}{tau}
+    \PY{n}{n}\PY{o}{+}\PY{o}{=}\PY{l+m+mi}{1}
+    
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Nombre d}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{itérations : }\PY{l+s+s2}{\PYZdq{}} \PY{o}{+} \PY{n+nb}{str}\PY{p}{(}\PY{n}{n}\PY{p}{)} \PY{o}{+} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ | t = }\PY{l+s+s2}{\PYZdq{}}\PY{o}{+} \PY{n+nb}{str}\PY{p}{(}\PY{n}{t}\PY{p}{)}\PY{p}{)}
+
+    \PY{k}{if} \PY{p}{(}\PY{n}{t} \PY{o}{\PYZgt{}} \PY{n}{Tmax}\PY{o}{/}\PY{n}{nSauvegarde}\PY{o}{*}\PY{n}{k} \PY{o+ow}{and} \PY{p}{(}\PY{n}{k}\PY{o}{\PYZlt{}}\PY{n}{nSauvegarde}\PY{p}{)} \PY{o+ow}{and} \PY{p}{(}\PY{o+ow}{not} \PY{n}{tSauvegarde}\PY{p}{[}\PY{n}{k}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+        \PY{n}{enregistre\PYZus{}W}\PY{p}{(}\PY{n}{t}\PY{p}{,}\PY{n}{index}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{)}
+        \PY{n}{tSauvegarde}\PY{p}{[}\PY{n}{j}\PY{p}{]}\PY{o}{=}\PY{k+kc}{True}
+        \PY{n}{k}\PY{o}{+}\PY{o}{=}\PY{l+m+mi}{1}
+
+\PY{n}{imageio}\PY{o}{.}\PY{n}{mimsave}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{movie.gif}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{images}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Gif Sauvegardé dans le dossier sous le nom : movie.gif}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
 %----------------------------------------------------------------------------------------
 
 \begin{thebibliography}{9}
