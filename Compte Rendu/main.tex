@@ -1176,7 +1176,56 @@ En échelle loglog, on observe à chaque fois que l'erreur décroit selon une pe
 
 Des résultats similaires sont obtenus lorsque l'on affiche le débit $q$ plutôt que la hauteur d'eau $h$. De la même fa\c con, on peut faire varier les paramètres $\textbf{xMin}$, $\textbf{xMax}$, $\textbf{Tmax}$ ainsi que les conditions initiales et on arrive aux mêmes conclusions.
 
-\subsubsection{Influence du pas temporel (va être retravaillé)}
+\subsubsection{Influence du pas temporel}
+
+Dans ce paragraphe, nous allons faire une étude similaire à celle qui précède, sauf que cette fois nous allons fixer le nombre $N=2^{7}$ de points (intérieurs) de la discrétisation et faire varier le pas d'espace $\tau$.
+Tous les autres paramètres restent inchangés et les conditions initiales sont encore les mêmes.
+
+$\tau$ va être pris égal à $\frac{1}{2^{k}}$ avec $k$ variant de $8$ à $17$. On considère que l'on est très proche de la solution exacte lorsque $\tau = \frac{1}{2^{17}}$ et on note $U_{ex}$ la solution obtenue avec ce pas de temps.
+On note $U_{\tau}$ une solution obtenue avec un pas plus grand (c'est à dire avec $k\leq17)$. En augmentant $k$, on s'attend à voir converger la solution $U_{\tau}$ vers $U_{ex}$. Nous allons le vérifier sur les hauteurs d'eau. Dans la suite, $h_{ex}$ désignera la hauteur d'eau de la solution $U_{ex}$ et $h_{\tau}$ celle de $U_{\tau}$.
+
+\begin{figure}
+\includegraphics[scale = .6]{testconvtau8}
+\includegraphics[scale = .6]{testconvtau10} 
+\end{figure}
+
+\begin{figure}
+\includegraphics[scale = .6]{testconvtau12}
+\includegraphics[scale = .6]{testconvtau14} 
+\end{figure}
+
+Effectivement, on observe bien la convergence des solutions approchées lorsque $k$ augmente. Nous allons quantifier cette convergence en effectuant la représentation graphique de l'erreur en norme $L^{2}$ discrète comme dans le paragraphe précédent.
+
+\begin{figure}
+\includegraphics[scale = .6]{erreurtauL2}
+\includegraphics[scale = .6]{erreurloglogtauL2} 
+\end{figure}
+
+On voit que plus $\tau$ est petit et moins l'erreur entre $h_{\tau}$ et $h_{ex}$ (en norme $L^{2}$) est importante. En échelle loglog, la courbe de l'erreur est approximativement une droite de pente égale à 1. Ainsi, le schéma est d'ordre 1 en temps sur cet exemple. Des résultats similaires sont obtenus lorsque l'on fait varier les paramètres $\textbf{xMin}$, $\textbf{xMax}$, $\textbf{Tmax}$ ainsi que les conditions initiales. 
+
+Dans les simulations faites, les solutions calculées sont stables dans la mesure où le pas de temps $\tau$ a été pris suffisamment petit. Pour rappel, le schéma de Rusanov est stable sous la condition CFL locale suivante :
+
+$$
+\underset{j\in \{i,i+1\}}{\max} \underset{k\in\{1,2\}}{\max} |\lambda_{k}(U_{j}^{n}) | \tau^{n} \leq \frac{h}{2}.
+$$
+
+A chaque étape $n$ de la simulation, il faut donc prendre garde à ce que le nouveau pas de temps vérifie cette condition. Sinon, la stabilité n'est pas garantie. Par exemple, si l'on reprend le même contexte que l'étude qui précède mais que l'on choisit de prendre à chaque étape $n$ un pas de temps $$\tau^{n}=\frac{3}{2}~\frac{h}{2\times\underset{j\in \{i,i+1\}}{\max} \underset{k\in\{1,2\}}{\max} |\lambda_{k}(U_{j}^{n}) |},$$
+
+la condition CFL n'est pas vérifiée et voici ce que l'on obtient pour la hauteur d'eau $h_{\tau^{n}}$ correspondante :
+
+\begin{figure}
+\centering
+\includegraphics[scale = .8]{CFL1}
+\end{figure}
+
+Après un petit laps de temps, la solution approchée est déjà très éloignée de la solution exacte. Et en prenant un pas encore plus grand, par exemple $$\tau^{n}=1,9~\frac{h}{2\times\underset{j\in \{i,i+1\}}{\max} \underset{k\in\{1,2\}}{\max} |\lambda_{k}(U_{j}^{n}) |},$$ le phénomène empire encore :
+
+\begin{figure}
+\centering
+\includegraphics[scale = .8]{CFL2}
+\end{figure}
+
+Il faut donc veiller à ce que la condition CFL soit vérifiée, sans quoi le schéma propage des erreurs importantes.
 
 \begin{comment}
 
@@ -1607,7 +1656,7 @@ temps \(t^{n+1}\) suivant la relation explicite suivante :
 \newpage
 \subsection{Code de l'implémentation du schéma de Rusanov en 2D}
 
-    \subsubsection{Équations dans le cas 2D}
+    \subsubsection*{Équations dans le cas 2D}
 
 Les équations de Saint-Venant dans en 2D sont les suivantes :
 
@@ -1621,7 +1670,7 @@ On fait l'implémentation du cas 2D sur le même modèle que dans le cas
 1D.
 
     \hypertarget{importations}{%
-\subsubsection*{Importations}\label{importations}}
+\subsubsection**{Importations}\label{importations}}
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
 \prompt{In}{incolor}{1}{\boxspacing}
@@ -1641,7 +1690,7 @@ On fait l'implémentation du cas 2D sur le même modèle que dans le cas
 \end{tcolorbox}
 
     \hypertarget{paramuxe8tres-du-probluxe8me}{%
-\subsubsection{Paramètres du problème}\label{paramuxe8tres-du-probluxe8me}}
+\subsubsection*{Paramètres du problème}\label{paramuxe8tres-du-probluxe8me}}
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
 \prompt{In}{incolor}{1}{\boxspacing}
@@ -1666,7 +1715,7 @@ On fait l'implémentation du cas 2D sur le même modèle que dans le cas
 \end{tcolorbox}
 
     \hypertarget{conditions-initiales}{%
-\subsubsection*{Conditions initiales}\label{conditions-initiales}}
+\subsubsection**{Conditions initiales}\label{conditions-initiales}}
 
 Dans la cellule ci-dessous, nous définissons la discrétisation de l'axe
 des abscisses \(\textbf{X}\), ainsi que les profils initiaux de la
@@ -1703,7 +1752,7 @@ hauteur d'eau \(h\) et des débits \(hu\) et \(hv\).
 \end{tcolorbox}
 
     \hypertarget{nombre-de-sauvegardes-durant-la-simulation}{%
-\subsubsection{Nombre de sauvegardes durant la
+\subsubsection*{Nombre de sauvegardes durant la
 simulation}\label{nombre-de-sauvegardes-durant-la-simulation}}
 
 Quelques variables qui vont nous servir pour enregistrer des étapes de
@@ -1721,7 +1770,7 @@ nombre d'images à sauver deviendrait vite trop important.
 \end{tcolorbox}
 
     \hypertarget{affichage-des-images}{%
-\subsubsection{Affichage des images}\label{affichage-des-images}}
+\subsubsection*{Affichage des images}\label{affichage-des-images}}
 
 La fonction ci-dessous permet de gérer l'affichage de la solution. Elle
 est suivie d'un test. Les graphes qui s'affichent sont ceux de \(h\) et
@@ -1784,7 +1833,7 @@ est suivie d'un test. Les graphes qui s'affichent sont ceux de \(h\) et
     { \hspace*{\fill} \\}
     
     \hypertarget{sauvegarde-des-images}{%
-\subsubsection{Sauvegarde des images}\label{sauvegarde-des-images}}
+\subsubsection*{Sauvegarde des images}\label{sauvegarde-des-images}}
 
 \emph{enregistre\_W} effectue un traitement identique à
 \emph{affiche\_W}. La seule différence est qu'elle enregistre le plot
@@ -1833,7 +1882,7 @@ dans le répertoire courant plutôt que de l'afficher.
 \end{Verbatim}
 \end{tcolorbox}
 
-    \subsubsection{Fonctions intervenant dans le schéma}
+    \subsubsection*{Fonctions intervenant dans le schéma}
 
 En posant : $W =
 \left[ {\begin{array}{c}   h \\    hu \\    hv \\  \end{array} } \right] $
