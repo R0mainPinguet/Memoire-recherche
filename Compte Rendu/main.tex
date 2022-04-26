@@ -1282,8 +1282,99 @@ On retrouve le même phénomène dans le cas de la goutte d'eau qui tombe au cen
 \caption{Simulations pour différentes valeurs de $\tau$}
 \end{figure}
 
-De même, plus le pas temporel est faible, plus la quantité d'eau est conservée au cours du temps. On remarque aussi que la quantité d'eau est bien conservée quand la vague est au centre du repère. Cependant, quand elle atteint le bord et disparait aux limites, la quantité d'eau baisse brutalement ( il suffit de comparer la quantité entre $t=0\ s$ et $t=20\ s$ puis la quantité entre $t=20\ s$ et $t=30\ s$ ). 
+De même, plus le pas temporel est faible, plus la quantité d'eau est conservée au cours du temps. On remarque aussi que la quantité d'eau est bien conservée quand la vague est au centre du repère. Cependant, quand elle atteint le bord et disparaît aux limites, la quantité d'eau baisse brutalement ( il suffit de comparer la quantité entre $t=0\ s$ et $t=20\ s$ puis la quantité entre $t=20\ s$ et $t=30\ s$ ). 
 \end{comment}
+
+\newpage
+\section{Cas 2D}
+
+\subsection{Présentation des équations}
+
+Dans le cas bi-dimensionnel, nous avons maintenant trois inconnues : $h$, la hauteur de l'eau, ainsi que $u$ et $v$, la vitesse de l'eau selon l'axe $x$ et $y$ respectivement.
+
+Nous avons les trois équations suivantes : 
+
+$$\left\{
+    \begin{array}{lll}
+        \frac{\partial h}{\partial t} + \frac{\partial hu}{\partial x} + \frac{\partial hv}{\partial y} = 0 \\
+        \frac{\partial hu}{\partial t} + \frac{\partial}{\partial x} ( hu^2 + \frac{gh^2}{2} ) + \frac{\partial}{\partial y} ( huv + \frac{gh^2}{2} ) = 0 \\
+        \frac{\partial hv}{\partial t} + \frac{\partial}{\partial x} ( huv + \frac{gh^2}{2} ) + \frac{\partial}{\partial y} ( hv^2 + \frac{gh^2}{2} ) = 0
+    \end{array}
+\right.
+$$
+
+En posant : 
+$ W = \left[ {\begin{array}{c}   h \\    hu \\    hv \\  \end{array} } \right] $ ; 
+$ F(W) = \left[ {\begin{array}{c}   hu \\    hu^2 + \frac{gh^2}{2}  \\    huv + \frac{gh^2}{2} \\  \end{array} } \right] $ ;
+$ G(W) = \left[ {\begin{array}{c}   hv \\    huv + \frac{gh^2}{2}  \\    hv^2 + \frac{gh^2}{2} \\  \end{array} } \right] $
+
+On a le système suivant :
+
+$$ \frac{\partial W}{\partial t} + \frac{\partial F(W)}{\partial x} + \frac{\partial G(W)}{\partial y} = 0 $$
+
+\subsection{Calculs théoriques}
+
+En notant $q_x = hu$ le débit selon l'axe $x$ et $q_y = hv$ le débit selon l'axe $y$, on peut réécrire W, F(W) et G(W) de la manière suivante :
+
+$ W = \left[ {\begin{array}{c}   h \\    q_x \\    q_y \\  \end{array} } \right] $ ; 
+$ F(W) = \left[ {\begin{array}{c}   q_x \\    q_x^2/h + \frac{gh^2}{2}  \\    q_xq_y/h + \frac{gh^2}{2} \\  \end{array} } \right] $ ;
+$ G(W) = \left[ {\begin{array}{c}   q_y \\    q_xq_y/h + \frac{gh^2}{2}  \\    q_y^2/h + \frac{gh^2}{2} \\  \end{array} } \right] $
+
+On peut, de la même manière que dans le cas 1D, calculer les valeurs propres des systèmes associés à F et G : intéressons nous ici au cas de F.
+
+\renewcommand{\arraystretch}{2}
+$$ \partial_W F(W) = \begin{bmatrix} 
+	0 & 1 & 0 \\
+	-\frac{q_x^2}{h^2}+ gh & 2 \frac{q_x}{h} & 0\\
+	-\frac{q_x q_y}{h^2}+ gh &  \frac{q_y}{h} & \frac{q_x}{h} \\
+	\end{bmatrix} = J(W)
+$$
+
+Soient $\lambda _F \in \mathbb{R}$ , $ x = \left[ {\begin{array}{c}   x_1 \\    x_2 \\    x_3 \\  \end{array} } \right] \in \mathbb{R}^3$ tels que : $ J(W) x = \lambda _F x $
+
+On a donc : 
+
+$$\left\{
+    \begin{array}{lll}
+        x_2 = \lambda _F x_1 \\
+        (-\frac{q_x^2}{h^2} + gh ) x_1 + 2 \frac{q_x}{h} x_2 = \lambda _F x_2  \\
+        (-\frac{q_x q_y}{h^2} + gh ) x_1 + \frac{q_y}{h} x_2 + \frac{q_x}{h} x_3 = \lambda _F x_3
+    \end{array}
+\right.
+$$
+
+Les deux premières lignes sont équivalentes à $ ( \lambda _F ^2 - \frac{2 \lambda _F q_x}{h} + (\frac{q_x^2}{h^2} - gh)) x_1 = 0$
+
+$$ \Leftrightarrow x_1 = 0 \quad ou \quad \lambda _F ^2 - \frac{2 \lambda _F q_x}{h} + (\frac{q_x^2}{h^2} - gh ) = 0 $$
+
+$$ \Leftrightarrow  \lambda _F = \frac{q_x}{h} = u \quad ou \quad \lambda _F = u \pm \sqrt{gh} $$
+
+Les valeurs propres de cette matrice $J(W)$ sont donc $u$, $u + \sqrt{gh}$ et $u - \sqrt{gh}$.
+
+Comme on cherche la plus grande en valeur absolue, il est inutile de prendre en compte $u$, car cette valeur propre est comprise entre $u + \sqrt{gh}$ et $u - \sqrt{gh}$.
+
+On a la même chose pour le système avec G : les valeurs propres sont dans ce cas $v$, $v + \sqrt{gh}$ et $v - \sqrt{gh}$
+
+
+\subsection{Discrétisation}
+
+En s'inspirant de ce qui a été fait dans le cas 1D, on discrétise de la manière suivante :
+
+$$ \frac{ W_{i,j}^{n+1} - W_{i,j}^{n} }{\Delta t} + \frac{ F_{i+\frac{1}{2},j}^{n} -  F_{i-\frac{1}{2},j}^{n} }{\Delta x} + \frac{G_{i,j+\frac{1}{2}}^{n} -  G_{i,j-\frac{1}{2}}^{n} }{\Delta y} = 0 $$
+
+Ce qui nous donne finalement :
+
+$$  W_{i,j}^{n+1} = W_{i,j}^n - \frac{\Delta t}{\Delta x} ( F_{i+\frac{1}{2},j}^{n} -  F_{i-\frac{1}{2},j}^{n} ) - \frac{\Delta t}{\Delta y} ( G_{i,j+\frac{1}{2}}^{n} -  G_{i,j-\frac{1}{2}}^{n} ) $$
+
+Avec : 
+
+$$ F_{i+\frac{1}{2},j} =  \frac{ F(W_{i+1,j}) + F(W_{i,j}) }{2} - c \frac{ W_{i+1,j} - W_{i,j} }{2} \quad avec \quad c = \sup_{W =  W_{i,j} ,  W_{i+1,j}} \sup_{k = 1,2} | \lambda _{F,k}(W) | $$
+
+et
+
+$$ G_{i,j+\frac{1}{2}} =  \frac{ G(W_{i,j+1}) + G(W_{i,j}) }{2} - c \frac{ W_{i,j+1} - W_{i,j} }{2} \quad avec \quad c = \sup_{W =  W_{i,j} ,  W_{i,j+1}} \sup_{k = 1,2} | \lambda _{G,k}k(W) | $$
+
+
 
 
 \newpage
