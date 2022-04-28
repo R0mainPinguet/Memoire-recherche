@@ -423,7 +423,7 @@ f%consistentlayout, % Uncomment to change the layout of the declaration, abstrac
 %	INFORMATIONS
 %----------------------------------------------------------------------------------------
 
-\thesistitle{Approximation numérique d'ordre élevé de l'équation de Saint Venant} % Title
+\thesistitle{Approximation par volumes finis de l'équation de Saint Venant} % Title
 \supervisor{Thomas \textsc{Rey}} % Your supervisor's name, this is used in the title page, print it elsewhere with \supname
 \examiner{} % Your examiner's name, this is not currently used anywhere in the template, print it elsewhere with \examname
 \degree{} % Your degree name, this is used in the title page and abstract, print it elsewhere with \degreename
@@ -506,9 +506,13 @@ f%consistentlayout, % Uncomment to change the layout of the declaration, abstrac
 
 \newpage
 
-Les équations de Saint-Venant modélisent le comportement d'un écoulement en eau peu profonde, comme un canal ou un bord de plage.
-Ces équations, introduites à la fin des années 1880, sont extrêmement bien adaptées à modélisation et à la simulation numérique de phénomènes 
+\section{Introduction}
+
+Les équations de Saint-Venant permettent de modéliser le comportement d'un écoulement en eau peu profonde, comme un canal ou un bord de plage.
+Ces équations, introduites à la fin des années 1880, sont bien adaptées à modélisation et à la simulation numérique de phénomènes 
 catastrophiques, comme les inondations ou les tsunamis.
+
+Ce mémoire est consacré à la présentation de ces équations et à l'étude d'un schéma d'approximation par volumes finis appelé le schéma de Rusanov.
 
 \section{Description et dérivation des équations}
 
@@ -519,8 +523,8 @@ et d'expliquer comment on peut arriver à ces équations.
 
 Le système de Saint-Venant avec terme source (qui est aussi désigné par le nom \og équations d'écoulements en eau peu profonde  \fg{}) est le suivant :
 
-\begin{equation} \frac{\partial h}{\partial t}(t,x)+\frac{\partial q}{\partial x}(t,x)=0 \label{sveq1} \end{equation}
-\begin{equation} \frac{\partial q}{\partial t}(t,x)+\frac{\partial}{\partial x}(\frac{q^{2}(t,x)}{h(t,x)}+g\frac{h^{2}(t,x)}{2})=-gh(t,x)\frac{\partial Z}{\partial x}(x) \label{sveq2} \end{equation}
+\begin{equation} \frac{\partial h}{\partial t}(t,x)+\frac{\partial q}{\partial x}(t,x)=0, \label{sveq1} \end{equation}
+\begin{equation} \frac{\partial q}{\partial t}(t,x)+\frac{\partial}{\partial x}(\frac{q^{2}(t,x)}{h(t,x)}+g\frac{h^{2}(t,x)}{2})=-gh(t,x)\frac{\partial Z}{\partial x}(x). \label{sveq2} \end{equation}
 
 Celui-ci permet de décrire un écoulement d'eau unidirectionnel où $h(t,x)>0$ représente la hauteur d'eau, $u(t,x)$ désigne la vitesse du fluide, $q(t,x)=h(t,x)u(t,x)$ le débit du fluide et $Z(x)$ la topographie du canal ; $t\geq0$ étant le temps, $x\in\mathbb{R}$ la position spatiale dans le cours d'eau et $g$ la constante de gravitation.
 
@@ -529,7 +533,10 @@ fait ainsi l'hypothèse que le fond ne s'érode pas au cours du temps ; ce qui p
 
 \subsection{Dérivation des équations}
 
-Rappelons la règle de Leibniz qui permet de calculer la dérivée par rapport à $x$ d'une fonction de la forme $\int_{a(x)}^{b(x)} f(x,t)\,~\mathrm dt$.
+Les équations d'Euler sont des équations aux dérivées partielles non linéaires issues de la mécanique des fluides qui permettent de décrire l'écoulement de liquides et de gaz.
+Dans cette partie, nous allons montrer que dans le cadre de certaines hypothèses (l'hypothèse d'une hauteur d'eau peu profonde notamment), ces équations mènent au système de Saint-Venant.
+
+Rappelons la règle de Leibniz \cite{W1} qui permet de calculer la dérivée par rapport à $x$ d'une fonction de la forme $\int_{a(x)}^{b(x)} f(x,t)\,~\mathrm dt$.
 
 \begin{prop}[Règle de Leibniz]
 Soit $f : \mathbb{R}^{2} \rightarrow\mathbb{R}$ telle que $f$ et ${\partial f\over\partial x}$ soient continues sur $\mathbb{R}$, et soient $a$ et $b$ deux fonctions dérivables de $\mathbb{R}$ dans $\mathbb{R}$. Alors, l'intégrale paramétrique $F$ définie sur $\mathbb{R}$ par : $F(x)=\int_{a(x)}^{b(x)}f(x,y)~\mathrm dy$ est dérivable et :
@@ -715,26 +722,28 @@ Nous pouvons davantage simplifier cette équation en observant que u et v sont i
 
 soit la première équation de Saint Venant.
 
-Les deux équations \ref{EqSaintVenant1} et \ref{EqSaintVenant2} forment un système d'équations aux dérivées partielles d'inconnues $h$ et $q$ (ou $h$ et $u$). Etant données des conditions de bord et des conditions initiales, on doit pouvoir justifier qu'il existe une unique solution que l'on peut calculer numériquement à l'aide d'un schéma de type éléments finis.
+Les deux équations \ref{EqSaintVenant1} et \ref{EqSaintVenant2} forment un système d'équations aux dérivées partielles d'inconnues $h$ et $q$ (ou $h$ et $u$). Etant données des conditions de bord et des conditions initiales, il existe une unique solution que l'on peut calculer numériquement à l'aide d'un schéma de type volumes finis.
 
 \section{Découverte du modèle et premières propriétés qualitatives}
 
+Dans cette
+
 \begin{prop} La vitesse $u$ vérifie la loi de conservation hyperbolique scalaire suivante : 
 \begin{equation}
-\frac{\partial u}{\partial t}+\frac{\partial}{\partial x}(\frac{u^{2}}{2}+g(Z+h))=0 \label{cl}
+\frac{\partial u}{\partial t}+\frac{\partial}{\partial x}(\frac{u^{2}}{2}+g(Z+h))=0. \label{cl}
 \end{equation}
 
 \end{prop}
 
 \begin{proof}
-Puisque $q=h.u$, la dérivée spatiale de $q$ s'écrit : \begin{equation}\frac{\partial q}{\partial x} = u\frac{\partial h}{\partial x}+h\frac{\partial u}{\partial x} \label{eq1}\end{equation}
-et la dérivée temporelle : \begin{equation} \frac{\partial q}{\partial t} =  u\frac{\partial h}{\partial t} +  h\frac{\partial u}{\partial t} \label{eq2} \end{equation}
-Alors en utilisant l'équation \ref{sveq1} du système, la dérivée temporelle donne aussi la relation \begin{equation}  \frac{\partial q}{\partial t}=-u\frac{\partial q}{\partial x}+h\frac{\partial u}{\partial t} \label{eq3}\end{equation}
+Puisque $q=h.u$, la dérivée spatiale de $q$ s'écrit  \begin{equation}\frac{\partial q}{\partial x} = u\frac{\partial h}{\partial x}+h\frac{\partial u}{\partial x}, \label{eq1}\end{equation}
+et la dérivée temporelle  \begin{equation} \frac{\partial q}{\partial t} =  u\frac{\partial h}{\partial t} +  h\frac{\partial u}{\partial t}, \label{eq2} \end{equation}
+Alors en utilisant l'équation \ref{sveq1} du système, la dérivée temporelle donne aussi la relation \begin{equation}  \frac{\partial q}{\partial t}=-u\frac{\partial q}{\partial x}+h\frac{\partial u}{\partial t}. \label{eq3}\end{equation}
 
 La loi de conservation que l'on cherche à montrer est alors une réécriture de l'équation \ref{sveq2} du système. On a en effet :
 
 $$
-\frac{\partial q}{\partial t} + \frac{\partial }{\partial x}(\frac{q^{2}}{h}+g\frac{h^{2}}{2}) = -gh\frac{\partial Z}{\partial x}
+\frac{\partial q}{\partial t} + \frac{\partial }{\partial x}(\frac{q^{2}}{h}+g\frac{h^{2}}{2}) = -gh\frac{\partial Z}{\partial x}.
 $$
 
 En développant la dérivée par rapport à $x$ et en utilisant \eqref{eq3} : 
@@ -751,14 +760,14 @@ $$
 $$
 
 $$
-\Leftrightarrow u\left[-\frac{\partial q}{\partial x}+\frac{h}{u}\frac{\partial u}{\partial t}+u\frac{\partial h }{\partial x} + h\frac{\partial u }{\partial x}\right]+h\left[\frac{\partial}{\partial x}(\frac{u^{2}}{2}+g(Z+h))\right] =0
+\Leftrightarrow u\left[-\frac{\partial q}{\partial x}+\frac{h}{u}\frac{\partial u}{\partial t}+u\frac{\partial h }{\partial x} + h\frac{\partial u }{\partial x}\right]+h\left[\frac{\partial}{\partial x}(\frac{u^{2}}{2}+g(Z+h))\right] =0.
 $$
 
 
 D'après \eqref{eq1}, une simplification s'opère dans les crochets de gauche et on obtient :
 
 $$
-u\left[\frac{h}{u}\frac{\partial u}{\partial t}\right]+h\left[\frac{\partial}{\partial x}(\frac{u^{2}}{2}+g(Z+h))\right] =0
+u\left[\frac{h}{u}\frac{\partial u}{\partial t}\right]+h\left[\frac{\partial}{\partial x}(\frac{u^{2}}{2}+g(Z+h))\right] =0.
 $$
 
 Il suffit alors de diviser par $h>0$ pour obtenir le résultat \eqref{cl}.
@@ -783,7 +792,7 @@ $
 \end{center}
 
 $\textbf{U}$ désigne le vecteur inconnu, $\textbf{F} (\textbf{U})$ la fonction flux et $\textbf{B} (\textbf{U})$ le terme source. Avec ces notations,
-le système de départ se réécrit : $$\frac{\partial\textbf{U}}{\partial t}+\frac{\partial}{\partial x}(\textbf{F} (\textbf{U})) = \textbf{B} (\textbf{U})$$
+le système de départ se réécrit : $$\frac{\partial\textbf{U}}{\partial t}+\frac{\partial}{\partial x}(\textbf{F} (\textbf{U})) = \textbf{B} (\textbf{U}).$$
 
 Nous allons faire l'hypothèse que $Z \equiv 0$. Les résultats que nous allons montrer à partir de maintenant ne seront valables que pour une topographie $Z$ nulle.
 En particulier, l'utilisation du schéma de Rusanov hors de ce cadre relèvera d'une démarche empirique.
@@ -792,7 +801,7 @@ En particulier, l'utilisation du schéma de Rusanov hors de ce cadre relèvera d
 
 \begin{prop}
 Posons le vecteur $\textbf{W}= (h, u)^{T}$ (variable dite non conservative). $\textbf{W}$ vérifie le système quasi-linéaire suivant :
-$$ \frac{\partial \textbf{W}}{\partial t} +\mathbb{A}(\textbf{W}) \frac{\partial\textbf{W}}{\partial x} = 0 \label{ql} $$
+$$ \frac{\partial \textbf{W}}{\partial t} +\mathbb{A}(\textbf{W}) \frac{\partial\textbf{W}}{\partial x} = 0.\label{ql} $$
 avec $\mathbb{A}(\textbf{W})$ définie par :
 
 $$\mathbb{A}(\textbf{W}) =\begin{pmatrix}
@@ -812,7 +821,7 @@ On a $\frac{\partial\textbf{W}}{\partial t}=\begin{pmatrix}
     u_{x} \\
 \end{pmatrix}$.
 
-En effectuant le produit matriciel et en sommant les termes dans l'équation  $ \frac{\partial \textbf{W}}{\partial t} +\mathbb{A}(\textbf{W}) \frac{\partial\textbf{W}}{\partial x} = 0 \label{ql} $ on obtient
+En effectuant le produit matriciel et en sommant les termes dans l'équation  $ \frac{\partial \textbf{W}}{\partial t} +\mathbb{A}(\textbf{W}) \frac{\partial\textbf{W}}{\partial x} = 0 \label{ql} $ on obtient :
 
 $$
 \begin{pmatrix}
@@ -825,7 +834,7 @@ u_{t} + (gh+u^{2})_{x}\\
 \begin{pmatrix}
 0 \\
 0\\
-\end{pmatrix}
+\end{pmatrix}.
 $$
 
 En utilisant la première équation du système \eqref{sveq1} et la loi de conservation \eqref{cl} dans le cas $Z\equiv 0$.
@@ -835,7 +844,7 @@ En utilisant la première équation du système \eqref{sveq1} et la loi de conse
 \begin{prop}
 La matrice $\mathbb{A}(\textbf{W})$ est diagonalisable et on a :
 $$
-\mathbb{P}(\textbf{W})^{-1}\mathbb{A}(\textbf{W})\mathbb{P}(\textbf{W})=\mathbb{D}(\textbf{W})
+\mathbb{P}(\textbf{W})^{-1}\mathbb{A}(\textbf{W})\mathbb{P}(\textbf{W})=\mathbb{D}(\textbf{W}),
 $$
 où 
 
@@ -865,7 +874,7 @@ $$\det(\mathbb{A}(\textbf{W})-\lambda I) =\begin{vmatrix}
 
 Or puisque $g$ et $h$ sont $>0$,
 
-$$(u-\lambda)^{2}-gh=0 \Leftrightarrow \lambda u +\sqrt{gh} \phantom{...}\text{ou}\phantom{...} \lambda u -\sqrt{gh}$$
+$$(u-\lambda)^{2}-gh=0 \Leftrightarrow \lambda u +\sqrt{gh} \phantom{...}\text{ou}\phantom{...} \lambda u -\sqrt{gh},$$
 
 et comme la matrice admet deux valeurs propres distinctes, elle est diagonalisable. La matrice diagonale est alors
 
@@ -902,14 +911,14 @@ $$\mathbb{A}(\textbf{W}) \begin{pmatrix}
 \end{pmatrix}=(u+\sqrt{gh})\begin{pmatrix}
    a\\
    b\\
-\end{pmatrix}$$
+\end{pmatrix}.$$
 
 
 Il s'agit d'un système lié donc il est équivalent de raisonner sur la première équation :
 
 $$au+bh = au+ a\sqrt{gh}$$
 
-$$\Leftrightarrow bh = a\sqrt{gh}$$
+$$\Leftrightarrow bh = a\sqrt{gh},$$
 
 
 et on voit que $\begin{pmatrix}
@@ -925,7 +934,7 @@ De même, \underline{pour le vecteur propre associé à $u -\sqrt{gh}$ :}
 
 Cette fois on arrive à $$cu+dh = cu- c\sqrt{gh}$$
 
-$$\Leftrightarrow dh = -c\sqrt{gh}$$
+$$\Leftrightarrow dh = -c\sqrt{gh},$$
 
 
 et on voit que $\begin{pmatrix}
@@ -959,14 +968,14 @@ La matrice jacobienne de \textbf{F} est la suivante :
 $$J_{\textbf{F}}(h, q) =\begin{pmatrix}
    0 & 1  \\
    -\frac{q^{2}}{h^{2}}+gh & \frac{2q}{h}  \\
-\end{pmatrix}$$
+\end{pmatrix}.$$
 
 Pour déterminer les valeurs propres de cette matrice, il faut calculer les racines du polynôme donné par
 
 $$\det (J_{\textbf{F}}(h, q)) =\begin{vmatrix}
    0-\lambda & 1  \\
    -\frac{q^{2}}{h^{2}}+gh & \frac{2q}{h}-\lambda  \\
-\end{vmatrix}$$
+\end{vmatrix},$$
 
 et $$-\lambda(\frac{2q}{h}-\lambda)+\frac{q^{2}}{h^{2}}-gh=0$$
 $$\Leftrightarrow \lambda^{2}-2u\lambda+u^{2}-gh=0.$$
@@ -983,6 +992,11 @@ Plus précisément : le système d'EDP de Saint-Venant est tel que la matrice ja
 Dans ce contexte, on peut appliquer le schéma dit de Rusanov, auquel est associé une condition CFL qui assure la stabilité. Nous allons développer ce point dans la partie suivante consacrée à ce schéma.
 
 \section{Le schéma de Rusanov}
+
+Le schéma de Rusanov est une méthode de volumes finis pour approcher numériquement des équations aux dérivées partielles. Avant de rentrer plus dans les détails du schéma, et en s'appuyant sur \cite{RL} et \cite{W2} , expliquons rapidement ce qu'est une méthode de volumes finis et expliquons les principales différences avec d'autres méthodes numériques.
+
+Les méthodes des volumes finis sont similaires aux méthodes de différences finies et d'éléments finis en ce sens qu'il s'agit d'établir un maillage et de déterminer des approximations de la solution de l'EDP aux points du maillage.
+Entre différences finies et volumes finis, la principale différence réside dans ce que l'on approche: pour les différences finies, on approche des dérivées à l'aide de différences divisées ; tandis que les volumes finis reposent sur des approximations d'intégrales. Et entre volumes finis et éléments finis, la principale différence est le type de formulation : les volumes finis s'appuient sur une formulation forte alors que les éléments finis découlent d'une formulation faible.
 
 \subsection{Présentation du schéma et résultats de convergence}
 
@@ -1300,19 +1314,19 @@ Nous avons les trois équations suivantes :
 
 $$\left\{
     \begin{array}{lll}
-        \frac{\partial h}{\partial t} + \frac{\partial hu}{\partial x} + \frac{\partial hv}{\partial y} = 0 \\
-        \frac{\partial hu}{\partial t} + \frac{\partial}{\partial x} ( hu^2 + \frac{gh^2}{2} ) + \frac{\partial}{\partial y} ( huv  ) = 0 \\
-        \frac{\partial hv}{\partial t} + \frac{\partial}{\partial x} ( huv ) + \frac{\partial}{\partial y} ( hv^2 + \frac{gh^2}{2} ) = 0
+        \frac{\partial h}{\partial t} + \frac{\partial hu}{\partial x} + \frac{\partial hv}{\partial y} = 0, \\
+        \frac{\partial hu}{\partial t} + \frac{\partial}{\partial x} ( hu^2 + \frac{gh^2}{2} ) + \frac{\partial}{\partial y} ( huv  ) = 0, \\
+        \frac{\partial hv}{\partial t} + \frac{\partial}{\partial x} ( huv ) + \frac{\partial}{\partial y} ( hv^2 + \frac{gh^2}{2} ) = 0.
     \end{array}
 \right.
 $$
 
 En posant : 
-$ W = \left[ {\begin{array}{c}   h \\    hu \\    hv \\  \end{array} } \right] $ ; 
-$ F(W) = \left[ {\begin{array}{c}   hu \\    hu^2 + \frac{gh^2}{2}  \\    huv  \\  \end{array} } \right] $ ;
-$ G(W) = \left[ {\begin{array}{c}   hv \\    huv  \\    hv^2 + \frac{gh^2}{2} \\  \end{array} } \right] $
+$ W = \left[ {\begin{array}{c}   h \\    hu \\    hv \\  \end{array} } \right] $, 
+$ F(W) = \left[ {\begin{array}{c}   hu \\    hu^2 + \frac{gh^2}{2}  \\    huv  \\  \end{array} } \right] $,
+$ G(W) = \left[ {\begin{array}{c}   hv \\    huv  \\    hv^2 + \frac{gh^2}{2} \\  \end{array} } \right] $,
 
-On a le système suivant :
+on a le système suivant :
 
 $$ \frac{\partial W}{\partial t} + \frac{\partial F(W)}{\partial x} + \frac{\partial G(W)}{\partial y} = 0 $$
 
@@ -1320,9 +1334,13 @@ $$ \frac{\partial W}{\partial t} + \frac{\partial F(W)}{\partial x} + \frac{\par
 
 En notant $q_x = hu$ le débit selon l'axe $x$ et $q_y = hv$ le débit selon l'axe $y$, on peut réécrire W, F(W) et G(W) de la manière suivante :
 
-$ W = \left[ {\begin{array}{c}   h \\    q_x \\    q_y \\  \end{array} } \right] $ ; 
-$ F(W) = \left[ {\begin{array}{c}   q_x \\    q_x^2/h + \frac{gh^2}{2}  \\    q_xq_y/h  \\  \end{array} } \right] $ ;
-$ G(W) = \left[ {\begin{array}{c}   q_y \\    q_xq_y/h   \\    q_y^2/h + \frac{gh^2}{2} \\  \end{array} } \right] $
+\medskip
+
+$ W = \left[ {\begin{array}{c}   h \\    q_x \\    q_y \\  \end{array} } \right] $ ,
+$ F(W) = \left[ {\begin{array}{c}   q_x \\    q_x^2/h + \frac{gh^2}{2}  \\    q_xq_y/h  \\  \end{array} } \right] $ et
+$ G(W) = \left[ {\begin{array}{c}   q_y \\    q_xq_y/h   \\    q_y^2/h + \frac{gh^2}{2} \\  \end{array} } \right] $.
+
+\medskip
 
 On peut, de la même manière que dans le cas 1D, calculer les valeurs propres des systèmes associés à F et G : intéressons nous ici au cas de F.
 
@@ -1331,59 +1349,65 @@ $$ \partial_W F(W) = \begin{bmatrix}
 	0 & 1 & 0 \\
 	-\frac{q_x^2}{h^2}+ gh & 2 \frac{q_x}{h} & 0\\
 	-\frac{q_x q_y}{h^2} &  \frac{q_y}{h} & \frac{q_x}{h} \\
-	\end{bmatrix} = J(W)
+	\end{bmatrix} = J(W).
 $$
 
-Soient $\lambda _F \in \mathbb{R}$ , $ x = \left[ {\begin{array}{c}   x_1 \\    x_2 \\    x_3 \\  \end{array} } \right] \in \mathbb{R}^3$ tels que : $ J(W) x = \lambda _F x $
+Soient $\lambda _F \in \mathbb{R}$ , $ x = \left[ {\begin{array}{c}   x_1 \\    x_2 \\    x_3 \\  \end{array} } \right] \in \mathbb{R}^3$ tels que : $ J(W) x = \lambda _F x $.
 
 On a donc : 
 
 $$\left\{
     \begin{array}{lll}
-        x_2 = \lambda _F x_1 \\
-        (-\frac{q_x^2}{h^2} + gh ) x_1 + 2 \frac{q_x}{h} x_2 = \lambda _F x_2  \\
-        (-\frac{q_x q_y}{h^2} ) x_1 + \frac{q_y}{h} x_2 + \frac{q_x}{h} x_3 = \lambda _F x_3
+        x_2 = \lambda _F x_1, \\
+        (-\frac{q_x^2}{h^2} + gh ) x_1 + 2 \frac{q_x}{h} x_2 = \lambda _F x_2,  \\
+        (-\frac{q_x q_y}{h^2} ) x_1 + \frac{q_y}{h} x_2 + \frac{q_x}{h} x_3 = \lambda _F x_3.
     \end{array}
 \right.
 $$
 
-Les deux premières lignes sont équivalentes à $ ( \lambda _F ^2 - \frac{2 \lambda _F q_x}{h} + (\frac{q_x^2}{h^2} - gh)) x_1 = 0$
+Les deux premières lignes sont équivalentes à $$ ( \lambda _F ^2 - \frac{2 \lambda _F q_x}{h} + (\frac{q_x^2}{h^2} - gh)) x_1 = 0$$
 
-$$ \Leftrightarrow x_1 = 0 \quad ou \quad \lambda _F ^2 - \frac{2 \lambda _F q_x}{h} + (\frac{q_x^2}{h^2} - gh ) = 0 $$
+$$ \Leftrightarrow x_1 = 0 \quad \text{ou} \quad \lambda _F ^2 - \frac{2 \lambda _F q_x}{h} + (\frac{q_x^2}{h^2} - gh ) = 0 $$
 
-$$ \Leftrightarrow  \lambda _F = \frac{q_x}{h} = u \quad ou \quad \lambda _F = u \pm \sqrt{gh} $$
+$$ \Leftrightarrow  \lambda _F = \frac{q_x}{h} = u \quad \text{ou} \quad \lambda _F = u \pm \sqrt{gh} $$
 
 Les valeurs propres de cette matrice $J(W)$ sont donc $u$, $u + \sqrt{gh}$ et $u - \sqrt{gh}$.
 
 Comme on cherche la plus grande en valeur absolue, il est inutile de prendre en compte $u$, car cette valeur propre est comprise entre $u + \sqrt{gh}$ et $u - \sqrt{gh}$.
 
-On a la même chose pour le système avec G : les valeurs propres sont dans ce cas $v$, $v + \sqrt{gh}$ et $v - \sqrt{gh}$
+On a la même chose pour le système avec G : les valeurs propres sont dans ce cas $v$, $v + \sqrt{gh}$ et $v - \sqrt{gh}$.
 
 
 \subsection{Discrétisation}
 
 En s'inspirant de ce qui a été fait dans le cas 1D, on discrétise de la manière suivante :
 
-$$ \frac{ W_{i,j}^{n+1} - W_{i,j}^{n} }{\Delta t} + \frac{ F_{i+\frac{1}{2},j}^{n} -  F_{i-\frac{1}{2},j}^{n} }{\Delta x} + \frac{G_{i,j+\frac{1}{2}}^{n} -  G_{i,j-\frac{1}{2}}^{n} }{\Delta y} = 0 $$
+$$ \frac{ W_{i,j}^{n+1} - W_{i,j}^{n} }{\Delta t} + \frac{ F_{i+\frac{1}{2},j}^{n} -  F_{i-\frac{1}{2},j}^{n} }{\Delta x} + \frac{G_{i,j+\frac{1}{2}}^{n} -  G_{i,j-\frac{1}{2}}^{n} }{\Delta y} = 0. $$
 
 Ce qui nous donne finalement :
 
-$$  W_{i,j}^{n+1} = W_{i,j}^n - \frac{\Delta t}{\Delta x} ( F_{i+\frac{1}{2},j}^{n} -  F_{i-\frac{1}{2},j}^{n} ) - \frac{\Delta t}{\Delta y} ( G_{i,j+\frac{1}{2}}^{n} -  G_{i,j-\frac{1}{2}}^{n} ) $$
+$$  W_{i,j}^{n+1} = W_{i,j}^n - \frac{\Delta t}{\Delta x} ( F_{i+\frac{1}{2},j}^{n} -  F_{i-\frac{1}{2},j}^{n} ) - \frac{\Delta t}{\Delta y} ( G_{i,j+\frac{1}{2}}^{n} -  G_{i,j-\frac{1}{2}}^{n} ),$$
 
-Avec : 
+avec : 
 
-$$ F_{i+\frac{1}{2},j} =  \frac{ F(W_{i+1,j}) + F(W_{i,j}) }{2} - c \frac{ W_{i+1,j} - W_{i,j} }{2} \quad avec \quad c = \sup_{W =  W_{i,j} ,  W_{i+1,j}} \sup_{k = 1,2} | \lambda _{F,k}(W) | $$
+$$ F_{i+\frac{1}{2},j} =  \frac{ F(W_{i+1,j}) + F(W_{i,j}) }{2} - c \frac{ W_{i+1,j} - W_{i,j} }{2} \quad \text{avec} \quad c = \sup_{W =  W_{i,j} ,  W_{i+1,j}} \sup_{k = 1,2} | \lambda _{F,k}(W) |, $$
 
-et
+$$ G_{i,j+\frac{1}{2}} =  \frac{ G(W_{i,j+1}) + G(W_{i,j}) }{2} - c \frac{ W_{i,j+1} - W_{i,j} }{2} \quad \text{avec} \quad c = \sup_{W =  W_{i,j} ,  W_{i,j+1}} \sup_{k = 1,2} | \lambda _{G,k}k(W) | .$$
 
-$$ G_{i,j+\frac{1}{2}} =  \frac{ G(W_{i,j+1}) + G(W_{i,j}) }{2} - c \frac{ W_{i,j+1} - W_{i,j} }{2} \quad avec \quad c = \sup_{W =  W_{i,j} ,  W_{i,j+1}} \sup_{k = 1,2} | \lambda _{G,k}k(W) | $$
-
-\subsection{Tests de l'implémentation}
+\subsection{Validation de l'implémentation par des tests}
 
 Encore une fois, les conditions aux bords choisies sont des conditions de Neumann homogène. Les dérivées partielles en espace sont prises égales à $0$ au bord du domaine.
 Du point de vue de l'implémentation, les bords prennent la même valeur que leur voisin.
 
-\subsubsection{Le test de la goutte d'eau}
+\subsubsection{Quelques exemples}
+
+\paragraph{Le test de la rupture de barrage}
+
+\medskip
+
+\paragraph{Le test de la goutte d'eau}
+
+\medskip
 
 Comme pour le cas 1D, on effectue le test de la goutte d'eau, facile à confronter à l'intuition. Voilà ce que l'on observe (respectivement aux temps $t=0, 12.5, 25$ et $37.5$).
 
@@ -2026,7 +2050,7 @@ Avec \(h\) la hauteur de l'eau, \(u\) sa vitesse suivant la direction
 
 On a le système suivant :
 
-\[ \frac{\partial W}{\partial t} + \frac{\partial F(W)}{\partial x} + \frac{\partial G(W)}{\partial y} = 0 \]
+\[ \frac{\partial W}{\partial t} + \frac{\partial F(W)}{\partial x} + \frac{\partial G(W)}{\partial y} = 0. \]
 
 En identifiant \(F(W)\) au flux suivant \(x\) et \(G(W)\) au flux
 suivant \(y\).
@@ -2175,8 +2199,11 @@ et
 \bibitem{ET} E. \textsc{Toro},
 \textit{Riemann Solvers and Numerical Methods for Fluid Dynamic}, Springer, 2009
 
-\bibitem{W} \textsc{Wikipedia},
+\bibitem{W1} \textsc{Wikipedia},
 \href{https://fr.wikipedia.org/wiki/Intégrale_paramétrique#Dérivabilité}{ \textit{Intégrale paramétrique}}
+
+\bibitem{W2} \textsc{Wikipedia},
+\href{https://fr.wikipedia.org/wiki/Méthode_des_volumes_finis#Les_lois_de_conservation}{ \textit{Méthode des volumes finis}}
 
 \end{thebibliography}
 
