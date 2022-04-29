@@ -1425,7 +1425,7 @@ On observe que la goutte tombe, donnant naissance à une onde circulaire propage
 
 \subsubsection{Interactions d'ondes circulaires}
 
-On peut prendre deux gouttes d'eau pour condition initiale. On souhaite verifier que les interactions entre les fronts d'onde sont conformes à la réalité. Pour ce faire, on affiche l'évolution avec une vue du dessus.
+On peut prendre deux gouttes d'eau pour condition initiale. On souhaite vérifier que les interactions entre les fronts d'onde sont conformes à la réalité. Pour ce faire, on affiche l'évolution avec une vue du dessus.
 Voilà ce que l'on observe (respectivement aux temps $t=0, 12.5, 25$ et $37.5$).
 
 \begin{center}
@@ -1439,6 +1439,13 @@ Voilà ce que l'on observe (respectivement aux temps $t=0, 12.5, 25$ et $37.5$).
 \end{center}
 
 Au niveau des des deux points de rencontre des deux cercles, la hauteur d'eau est la plus haute car les ondes s'additionnent. C'est donc conforme à la réalité.
+
+
+\section{Conclusion}
+
+Nous avons vu dans ce mémoire l'implémentation de la méthode des volumes finis, dans le cadre de la simulation des équations de Saint Venant. Dans un premier temps, notre étude a porté sur le cas uni-dimensionnel, afin d'obtenir des résultats théoriques de convergence, ainsi que des résultats pratiques, par le biais de simulations numériques, comme la rupture de barrage. L'influence des différents paramètres du schéma, comme le pas spatial ou temporel ont aussi été étudiés. Nous avons ensuite pu, grâce à ces résultats, élargir notre champ d'étude en nous consacrant au cas bi-dimensionnel, ce qui nous a permi d'observer la stabilité et la consistance du schéma de Rusanov.
+
+Pour continuer cette étude, de nombreuses directions sont envisageables : il est en effet possible d'augmenter l'ordre du schéma, ou de rajouter l'influence du fond dans le cas 2D.
 
 \newpage
 \renewcommand{\thesection}{\Alph{section}}
