@@ -1445,7 +1445,7 @@ Au niveau des des deux points de rencontre des deux cercles, la hauteur d'eau es
 
 Nous avons vu dans ce mémoire l'implémentation de la méthode des volumes finis, dans le cadre de la simulation des équations de Saint Venant. Dans un premier temps, notre étude a porté sur le cas uni-dimensionnel, afin d'obtenir des résultats théoriques de convergence, ainsi que des résultats pratiques, par le biais de simulations numériques, comme la rupture de barrage. L'influence des différents paramètres du schéma, comme le pas spatial ou temporel ont aussi été étudiés. Nous avons ensuite pu, grâce à ces résultats, élargir notre champ d'étude en nous consacrant au cas bi-dimensionnel, ce qui nous a permis d'observer la stabilité et la consistance du schéma de Rusanov.
 
-Pour continuer cette étude, de nombreuses directions sont envisageables : il est en effet possible d'augmenter l'ordre du schéma, ou de rajouter l'influence du fond dans le cas 2D.
+Pour continuer cette étude, de nombreuses directions sont envisageables. D'un point de vue mathématiques, il est possible d'augmenter l'ordre du schéma. D'un point de vue physique, nous n'avons pas pris en compte l'influence du fond dans le cas 2D. Enfin, d'un point de vue informatique, il aurait été judicieux de coder en C, ou de paralléliser notre code, afin d'accélérer les simulations, qui pouvaient être assez longues, notamment dans le cas bi-dimensionnel.
 
 \newpage
 \renewcommand{\thesection}{\Alph{section}}
