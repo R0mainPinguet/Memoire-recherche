@@ -559,7 +559,9 @@ $$= f(x,b(x))b'(x)-f(x,a(x))a'(x)+\int_{a(x)}^{b(x)} \frac{\partial f}{\partial 
 
 \subsubsection{Les équations d'Euler}
 
-Dans ce paragraphe, nous allons d'abord parler des équations d'Euler. Ce sont des équations qui forment un système hyperbolique non-linéaire. Les équations expriment des lois de conservation qui gouvernent la dynamique des fluides. C'est à partir de ces équations, et moyennant certaines hypothèses, que nous allons dériver les équations de Saint-Venant. Notons $\rho(x,y,z,t)$ la masse volumique du fluide, $p(x,y,z,t)$ la pression, $u(x,y,z,t)$ la composante selon l'axe $(Ox)$ de la vitesse, $v(x,y,z,t)$ sa composante selon l'axe $(Oy)$ et $w(x,y,z,t)$ sa composante selon l'axe $(Oz)$. Nous noterons alors par la suite $\textbf{V}=(u,v,w )$ le vecteur vitesse dont les composantes sont les vitesses $u, v$ et $w$. 
+Dans ce paragraphe, nous allons d'abord parler des équations d'Euler. Ce sont des équations qui forment un système hyperbolique non-linéaire. Les équations expriment des lois de conservation qui gouvernent la dynamique des fluides. C'est à partir de ces équations, et moyennant certaines hypothèses, que nous allons dériver les équations de Saint-Venant. 
+
+Notons $\rho(x,y,z,t)$ la masse volumique du fluide, $p(x,y,z,t)$ la pression, $u(x,y,z,t)$ la composante selon l'axe $(Ox)$ de la vitesse, $v(x,y,z,t)$ sa composante selon l'axe $(Oy)$ et $w(x,y,z,t)$ sa composante selon l'axe $(Oz)$. Nous noterons alors par la suite $\textbf{V}=(u,v,w )$ le vecteur vitesse dont les composantes sont les vitesses $u, v$ et $w$. 
 
 Les trois équations d'Euler sont les suivantes :
 
@@ -1112,11 +1114,11 @@ Partons maintenant de la condition initiale suivante : une bosse d'eau au milieu
 \end{figure}
 
 Intuitivement, on s'attend à ce que la \og goutte \fg{} tombe et forme deux vagues qui partent vers chacun des deux bords du domaine.
-C'est aussi ce que nous dit la référence \cite{RL} à la page 257. Et effectivement, voici ce que l'on observe (après environ 3 secondes et 8 secondes) :
+C'est aussi ce que nous dit la référence \cite{RL} à la page 257. Et effectivement, voici ce que l'on observe (après 5 secondes et 10 secondes) :
 
 \begin{figure}
-\includegraphics[scale = .6]{bosse4.png}
-\includegraphics[scale = .6]{bosse10.png} 
+\includegraphics[scale = .6]{bosse5}
+\includegraphics[scale = .6]{bosse10} 
 \caption{Un deuxième test : une goutte d'eau}
 \end{figure}
 
@@ -1130,15 +1132,15 @@ Regardons maintenant un dernier test classique dans la littérature : la rupture
 \end{figure}
 
 L'eau forme une courbe en escalier (d'une seule marche) comme si elle était contenue dans une digue. On observe son évolution comme si la digue disparaissait juste après l'instant initial ; d'où le nom de
-rupture de barrage. On observe le résultat suivant :
+rupture de barrage. On a le résultat suivant :
 
 \begin{figure}
-\includegraphics[scale = .6]{barrage1}
-\includegraphics[scale = .6]{barrage5} 
+\includegraphics[scale = .6]{barrage5}
+\includegraphics[scale = .6]{barrage10} 
 \caption{Un deuxième test : une goutte d'eau}
 \end{figure}
 
-Ce résultat est conforme à ce que l'on observe dans \cite{RL} page 259. La dynamique des solutions obtenues par notre implémentation est donc la bonne sur ces quelques tests.
+Ce résultat est conforme à ce que l'on peut voir dans \cite{RL} page 259. La dynamique des solutions obtenues par notre implémentation est donc la bonne sur ces quelques tests.
 
 \subsubsection{Influence du pas spatial}
 
@@ -1406,6 +1408,20 @@ Du point de vue de l'implémentation, les bords prennent la même valeur que leu
 
 \medskip
 
+Voici le test de la rupture de barrage en 2D. L'eau contenue dans le coin du domaine est lachée au temps initial. Voilà ce que l'on observe (respectivement aux temps $t=0, 12.5, 25$ et $37.5$).
+
+\medskip
+
+\begin{center}
+\includegraphics[scale = 0.6]{barrage2D0}
+\includegraphics[scale = 0.6]{barrage2D1} 
+\end{center}
+
+\begin{center}
+\includegraphics[scale = 0.6]{barrage2D2}
+\includegraphics[scale = 0.6]{barrage2D3} 
+\end{center}
+
 \paragraph{Le test de la goutte d'eau}
 
 \medskip
@@ -1413,13 +1429,13 @@ Du point de vue de l'implémentation, les bords prennent la même valeur que leu
 Comme pour le cas 1D, on effectue le test de la goutte d'eau, facile à confronter à l'intuition. Voilà ce que l'on observe (respectivement aux temps $t=0, 12.5, 25$ et $37.5$).
 
 \begin{center}
-\includegraphics[scale = 0.82]{goutte2D0}
-\includegraphics[scale = 0.82]{goutte2D1} 
+\includegraphics[scale = 0.6]{goutte2D0}
+\includegraphics[scale = 0.6]{goutte2D1} 
 \end{center}
 
 \begin{center}
-\includegraphics[scale = 0.82]{goutte2D2}
-\includegraphics[scale = 0.82]{goutte2D3} 
+\includegraphics[scale = 0.6]{goutte2D2}
+\includegraphics[scale = 0.6]{goutte2D3} 
 \end{center}
 
 On observe que la goutte tombe, donnant naissance à une onde circulaire propageant vers l'extérieur du domaine.
@@ -1430,13 +1446,13 @@ On peut prendre deux gouttes d'eau pour condition initiale. On souhaite vérifie
 Voilà ce que l'on observe (respectivement aux temps $t=0, 12.5, 25$ et $37.5$).
 
 \begin{center}
-\includegraphics[scale = 1]{gouttes2D0}
-\includegraphics[scale = 1]{gouttes2D1} 
+\includegraphics[scale = 0.6]{gouttes2D0}
+\includegraphics[scale = 0.6]{gouttes2D1} 
 \end{center}
 
 \begin{center}
-\includegraphics[scale = 1]{gouttes2D2}
-\includegraphics[scale = 1]{gouttes2D3} 
+\includegraphics[scale = 0.6]{gouttes2D2}
+\includegraphics[scale = 0.6]{gouttes2D3} 
 \end{center}
 
 Au niveau des des deux points de rencontre des deux cercles, la hauteur d'eau est la plus haute car les ondes s'additionnent. C'est donc conforme à la réalité.
