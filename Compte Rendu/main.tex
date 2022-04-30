@@ -528,6 +528,11 @@ Le système de Saint-Venant avec terme source (qui est aussi désigné par le no
 
 Celui-ci permet de décrire un écoulement d'eau unidirectionnel où $h(t,x)>0$ représente la hauteur d'eau, $u(t,x)$ désigne la vitesse du fluide, $q(t,x)=h(t,x)u(t,x)$ le débit du fluide et $Z(x)$ la topographie du canal ; $t\geq0$ étant le temps, $x\in\mathbb{R}$ la position spatiale dans le cours d'eau et $g$ la constante de gravitation.
 
+\begin{figure}
+\centering
+\includegraphics[scale = .7]{Explications_HUZ.png}
+\end{figure}
+
 Dans ce système, $Z$ ne dépend pas du temps $t$. On
 fait ainsi l'hypothèse que le fond ne s'érode pas au cours du temps ; ce qui parait raisonnable dans de nombreuses situations (un fond rocheux sur une courte durée, par exemple).
 
@@ -728,8 +733,6 @@ Les deux équations \ref{EqSaintVenant1} et \ref{EqSaintVenant2} forment un syst
 
 \section{Découverte du modèle et premières propriétés qualitatives}
 
-Dans cette
-
 \begin{prop} La vitesse $u$ vérifie la loi de conservation hyperbolique scalaire suivante : 
 \begin{equation}
 \frac{\partial u}{\partial t}+\frac{\partial}{\partial x}(\frac{u^{2}}{2}+g(Z+h))=0. \label{cl}
@@ -876,7 +879,7 @@ $$\det(\mathbb{A}(\textbf{W})-\lambda I) =\begin{vmatrix}
 
 Or puisque $g$ et $h$ sont $>0$,
 
-$$(u-\lambda)^{2}-gh=0 \Leftrightarrow \lambda u +\sqrt{gh} \phantom{...}\text{ou}\phantom{...} \lambda u -\sqrt{gh},$$
+$$(u-\lambda)^{2}-gh=0 \Leftrightarrow \lambda = u +\sqrt{gh} \phantom{...}\text{ou}\phantom{...} \lambda = u -\sqrt{gh},$$
 
 et comme la matrice admet deux valeurs propres distinctes, elle est diagonalisable. La matrice diagonale est alors
 
@@ -2385,6 +2388,18 @@ bord (Neumann homogène).
 
 \bibitem{W2} \textsc{Wikipedia},
 \href{https://fr.wikipedia.org/wiki/Méthode_des_volumes_finis#Les_lois_de_conservation}{ \textit{Méthode des volumes finis}}
+
+\bibitem{PY1} P.-Y. \textsc{Lagrée},
+ \href{http://www.lmm.jussieu.fr/~lagree/COURS/MFEnv/code_C_saintvenant.pdf}
+ {\textit{Résolution numérique des équations de Saint-Venant, mise en oeuvre en volumes finis par un solveur de Riemann bien balancé}}
+ 
+\bibitem{PY2} P.-Y. \textsc{Lagrée},
+ \href{http://www.lmm.jussieu.fr/~lagree/COURS/MFEnv/MFEnv.pdf}
+ {\textit{Équations de Saint-Venant et applications aux mouvements de fonds érodables}}
+ 
+ \bibitem{Hal} Stéphane Cordier, Frédéric Darboux, Olivier Delestre, Francois James
+ \href{https://hal.archives-ouvertes.fr/hal-00133742}
+ {\textit{Étude d’un modèle de ruissellement 1-d.} 2007 }
 
 \end{thebibliography}
 
